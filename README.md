@@ -2,11 +2,24 @@
 
 [![CI](https://github.com/cab0a/vision-playground/actions/workflows/ci.yml/badge.svg)](https://github.com/cab0a/vision-playground/actions/workflows/ci.yml)
 
+## What This Project Demonstrates
+
+- OpenCVによる画像処理
+- 再現可能な実験設計
+- IoU、Precision、Recall、F1による定量評価と比較
+- Pythonパッケージとしてのコード設計
+- pytestによる自動テスト
+- GitHub ActionsによるCI
+- 結果のCSV・比較画像出力
+- 評価結果、前提条件、限界のドキュメント化
+
+![Thresholding comparison](results/thresholding_comparison.png)
+
 ## Overview
 
 Vision Playground contains small, reproducible computer vision experiments organized around a research question, an implementation, and an evaluation.
 
-The thresholding study compares a fixed global threshold, Otsu's global method, and Gaussian adaptive thresholding on deterministic synthetic images. Parameter sensitivity, denoising, and Canny edge detection experiments evaluate behavior under controlled conditions. Freely reusable photographs provide separate qualitative and stability checks.
+The thresholding study compares a fixed global threshold, Otsu's global method, and Gaussian adaptive thresholding on deterministic synthetic images. Parameter sensitivity, denoising, and Canny edge detection experiments evaluate behavior under controlled conditions. Freely reusable photographs provide separate qualitative and stability checks, while a labeled Oxford-IIIT Pet subset supports pixel-level quantitative evaluation.
 
 ## Research Question
 
@@ -15,6 +28,8 @@ How do fixed, histogram-based, and locally adaptive thresholds behave when foreg
 Can simple preprocessing make Otsu thresholding more stable under Gaussian and salt-and-pepper noise, and does filter choice matter?
 
 How does controlled noise affect Canny edge detection, and how much can simple denoising recover?
+
+How do intensity-only and color-and-location segmentation baselines compare when human-labeled public masks are available?
 
 ## Hypothesis
 
@@ -41,6 +56,8 @@ The sensitivity analysis evaluates 30 adaptive configurations: block sizes `31`,
 The denoising experiment fixes the downstream method to Otsu thresholding and changes only the preprocessing step: no filter, a 5 × 5 Gaussian filter, or a 5 × 5 median filter. It evaluates zero-mean Gaussian noise with standard deviation `45` and salt-and-pepper noise affecting `15%` of pixels.
 
 The edge experiment applies Canny with thresholds `125` and `250` after the same preprocessing options. Predicted boundaries are evaluated with a two-pixel positional tolerance so minor rasterization shifts do not dominate the result.
+
+The labeled public-data experiment evaluates brighter-foreground Otsu, darker-foreground Otsu, and fixed-inset GrabCut masks against Oxford-IIIT Pet trimaps. The labels are used only for evaluation, not during prediction.
 
 ## Synthetic Dataset
 
@@ -86,8 +103,6 @@ The reference run uses seed `7`, a fixed threshold of `127`, and one adaptive co
 Otsu's method adapts successfully when the low-contrast distribution shifts above the fixed threshold. Under uneven illumination, both global methods remain near `0.453` IoU, while the adaptive method reaches `0.847` by using spatially varying thresholds.
 
 The adaptive method is not uniformly better. It introduces small false-negative regions in the clean case, performs substantially below Otsu's method in the low-contrast case, and amplifies local noise in the high-noise case. The results support method selection based on failure conditions rather than treating any automatic method as a default improvement.
-
-![Thresholding comparison](results/thresholding_comparison.png)
 
 Reproduce the reference artifacts with:
 
@@ -217,6 +232,26 @@ python experiments/run_edge_public_sample.py
 
 The public sample compares each noisy output with the clean-image Canny edge map. It measures algorithmic stability rather than agreement with human-labeled boundaries. See the [public edge analysis](results/edge_public_sample/README.md) for results, metric details, limitations, and provenance.
 
+## Labeled Public Dataset Evaluation
+
+A six-image Oxford-IIIT Pet subset provides pixel-level trimaps for a compact quantitative comparison:
+
+```bash
+python experiments/run_labeled_dataset_evaluation.py
+```
+
+| Method | Mean IoU | Mean F1 |
+| --- | ---: | ---: |
+| Brighter-foreground Otsu | 0.300 | 0.438 |
+| Darker-foreground Otsu | 0.322 | 0.466 |
+| Fixed-inset GrabCut | 0.745 | 0.851 |
+
+![Labeled public dataset comparison](results/labeled_public_dataset/labeled_dataset_comparison.jpg)
+
+The two Otsu polarities vary sharply by image because the pet is not consistently brighter or darker than its background. GrabCut performs better on all six selected images by combining color distributions with the assumption that the image boundary contains background. The small, fixed subset is useful for a reviewable experiment, but it is not a representative benchmark of the full dataset.
+
+See the [labeled evaluation report](results/labeled_public_dataset/README.md) for per-image interpretation, reproduction details, data provenance, and limitations.
+
 ## Inspected Research Workflow
 
 An optional workflow connects [Image Dataset Inspector](https://github.com/cab0a/image-dataset-inspector) to the public-image experiment:
@@ -249,6 +284,7 @@ python experiments/run_thresholding_comparison.py --output results
 python experiments/run_adaptive_sensitivity.py --output results
 python experiments/run_denoising_comparison.py --output results
 python experiments/run_edge_detection_comparison.py --output results
+python experiments/run_labeled_dataset_evaluation.py
 python -m pytest
 ```
 
@@ -281,6 +317,8 @@ The experiment writes:
 - `results/edge_detection_comparison.png`: synthetic edge detection outputs
 - `results/edge_public_sample/edge_detection_summary.csv`: public-image edge stability metrics
 - `results/edge_public_sample/edge_detection_comparison.jpg`: public-image edge outputs
+- `results/labeled_public_dataset/labeled_dataset_metrics.csv`: per-image metrics against Oxford-IIIT Pet trimaps
+- `results/labeled_public_dataset/labeled_dataset_comparison.jpg`: images, labels, and predicted masks
 - `results/inspected_public_sample/input_inspection.csv`: input audit from Image Dataset Inspector
 - `results/inspected_public_sample/workflow_summary.csv`: joined inspection and thresholding diagnostics
 
@@ -291,6 +329,12 @@ vision-playground/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml
+├── data/
+│   └── oxford_pet_sample/
+│       ├── images/
+│       ├── trimaps/
+│       ├── README.md
+│       └── manifest.csv
 ├── experiments/
 │   ├── run_adaptive_public_sample.py
 │   ├── run_adaptive_sensitivity.py
@@ -299,6 +343,7 @@ vision-playground/
 │   ├── run_edge_detection_comparison.py
 │   ├── run_edge_public_sample.py
 │   ├── run_inspected_public_sample.py
+│   ├── run_labeled_dataset_evaluation.py
 │   ├── run_public_image_sample.py
 │   └── run_thresholding_comparison.py
 ├── results/
@@ -314,6 +359,10 @@ vision-playground/
 │   │   ├── README.md
 │   │   ├── edge_detection_comparison.jpg
 │   │   └── edge_detection_summary.csv
+│   ├── labeled_public_dataset/
+│   │   ├── README.md
+│   │   ├── labeled_dataset_comparison.jpg
+│   │   └── labeled_dataset_metrics.csv
 │   ├── inspected_public_sample/
 │   │   ├── README.md
 │   │   ├── input_inspection.csv
@@ -342,6 +391,7 @@ vision-playground/
 │       ├── edge_sample.py
 │       ├── evaluation.py
 │       ├── experiment.py
+│       ├── labeled_dataset.py
 │       ├── real_images.py
 │       ├── sensitivity.py
 │       ├── synthetic.py
@@ -355,6 +405,7 @@ vision-playground/
 │   ├── test_edge_sample.py
 │   ├── test_evaluation.py
 │   ├── test_experiment.py
+│   ├── test_labeled_dataset.py
 │   ├── test_real_images.py
 │   ├── test_sensitivity.py
 │   ├── test_synthetic.py
@@ -379,12 +430,14 @@ vision-playground/
 - Public-image reference-mask IoU measures consistency with Otsu's clean-image output, not agreement with human labels.
 - Edge reference F1 uses a dilation-based positional tolerance without one-to-one boundary matching.
 - Public-image edge references are Canny outputs rather than human annotations.
+- The labeled public evaluation uses six selected images and cannot support dataset-wide or breed-level claims.
+- The fixed-inset GrabCut baseline assumes that the subject is separated from the image boundary.
+- Dataset labels are used only for evaluation, but the chosen subset and metric policy still influence the reported result.
 - Conclusions are limited to the generated conditions and should be validated on task-specific public data before practical use.
 - The inspected workflow requires unique basenames for valid input images when results are joined.
 
 ## Version Roadmap
 
-- `v0.7.0`: quantitative validation with a labeled public dataset
 - `v0.8.0`: cross-experiment summaries and consistent experiment interfaces
 - `v0.9.0`: documentation, API, and reproducibility review
 - `v1.0.0`: portfolio-ready stable baseline
@@ -396,8 +449,12 @@ The sequence may change when experimental results reveal a more useful next ques
 - [OpenCV: Image Thresholding](https://docs.opencv.org/4.x/d7/d4d/tutorial_py_thresholding.html)
 - [OpenCV: Smoothing Images](https://docs.opencv.org/4.x/d4/d13/tutorial_py_filtering.html)
 - [OpenCV: Canny Edge Detection](https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html)
+- [Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets/)
 - Nobuyuki Otsu, [A Threshold Selection Method from Gray-Level Histograms](https://doi.org/10.1109/TSMC.1979.4310076), 1979
+- Omkar M. Parkhi, Andrea Vedaldi, Andrew Zisserman, and C. V. Jawahar, [Cats and Dogs](https://www.robots.ox.ac.uk/~vgg/publications/2012/Parkhi12a/), 2012
 
 ## License
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+The project code is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+The committed Oxford-IIIT Pet subset and its derived visual artifacts retain the Creative Commons Attribution-ShareAlike 4.0 terms documented in the [dataset attribution](data/oxford_pet_sample/README.md).
