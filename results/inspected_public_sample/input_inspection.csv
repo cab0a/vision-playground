@@ -1,0 +1,6 @@
+relative_path,file_size_bytes,width,height,channels,brightness,contrast,blur_score,status,error_message
+camera.png,139512,512,512,1,129.060726,73.644847,1133.162694,valid,
+clock_motion.png,58784,400,300,1,146.331533,20.914467,24.286693,valid,
+coffee.png,466706,600,400,3,103.651612,58.115493,1541.184603,valid,
+hubble_deep_field.jpg,527940,1000,872,3,19.359755,26.240702,537.224006,valid,
+rocket.jpg,112525,640,427,3,60.972695,30.642984,820.868653,valid,

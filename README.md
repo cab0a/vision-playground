@@ -86,6 +86,23 @@ python experiments/run_public_image_sample.py
 
 These photographs do not include semantic ground-truth masks, so the example reports the selected threshold and foreground fraction without claiming segmentation accuracy. It is a qualitative check of how the methods behave on varied scenes. See the [public sample analysis and attribution](results/public_sample/README.md) for the detailed interpretation and licenses.
 
+## Inspected Research Workflow
+
+An optional workflow connects [Image Dataset Inspector](https://github.com/cab0a/image-dataset-inspector) to the public-image experiment:
+
+`Input Inspection → Thresholding Prototype → Qualitative Evaluation → Interpretation`
+
+```bash
+python -m pip install ".[workflow]"
+python experiments/run_inspected_public_sample.py
+```
+
+The input audit records unreadable files and descriptive image metrics before any thresholding is performed. Only valid images continue to the experiment. A combined CSV then joins the inspection metrics with the fixed and Otsu outputs for traceable analysis.
+
+![Inspected public image workflow](results/inspected_public_sample/thresholding_comparison.jpg)
+
+See the [workflow results and interpretation](results/inspected_public_sample/README.md) for the combined table, limitations, reproduction details, and data provenance.
+
 ## Quick Start
 
 Python 3.10 or later is required.
@@ -116,6 +133,8 @@ The experiment writes:
 
 - `results/thresholding_metrics.csv`: thresholds and evaluation metrics
 - `results/thresholding_comparison.png`: input, ground truth, and predicted masks
+- `results/inspected_public_sample/input_inspection.csv`: input audit from Image Dataset Inspector
+- `results/inspected_public_sample/workflow_summary.csv`: joined inspection and thresholding diagnostics
 
 ## Project Structure
 
@@ -125,9 +144,16 @@ vision-playground/
 │   └── workflows/
 │       └── ci.yml
 ├── experiments/
+│   ├── run_inspected_public_sample.py
 │   ├── run_public_image_sample.py
 │   └── run_thresholding_comparison.py
 ├── results/
+│   ├── inspected_public_sample/
+│   │   ├── README.md
+│   │   ├── input_inspection.csv
+│   │   ├── thresholding_comparison.jpg
+│   │   ├── thresholding_summary.csv
+│   │   └── workflow_summary.csv
 │   ├── public_sample/
 │   │   ├── README.md
 │   │   ├── thresholding_comparison.jpg
@@ -141,13 +167,15 @@ vision-playground/
 │       ├── experiment.py
 │       ├── real_images.py
 │       ├── synthetic.py
-│       └── thresholding.py
+│       ├── thresholding.py
+│       └── workflow.py
 ├── tests/
 │   ├── test_evaluation.py
 │   ├── test_experiment.py
 │   ├── test_real_images.py
 │   ├── test_synthetic.py
-│   └── test_thresholding.py
+│   ├── test_thresholding.py
+│   └── test_workflow.py
 ├── .gitignore
 ├── LICENSE
 ├── README.md
@@ -161,10 +189,11 @@ vision-playground/
 - Both compared methods use one global threshold and are expected to struggle under spatially varying illumination.
 - The selected fixed threshold is intentionally not tuned per scenario.
 - Conclusions are limited to the generated conditions and should be validated on task-specific public data before practical use.
+- The inspected workflow requires unique basenames for valid input images when results are joined.
 
 ## Roadmap
 
-Possible later experiments include adaptive thresholding under uneven illumination, denoising comparisons with a clean reference, and edge detection under controlled noise. These are intentionally excluded from version 0.1.
+Possible later experiments include adaptive thresholding under uneven illumination, denoising comparisons with a clean reference, and edge detection under controlled noise. They remain separate experiments so each research question can be evaluated independently.
 
 ## References
 

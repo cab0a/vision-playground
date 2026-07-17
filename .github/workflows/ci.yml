@@ -36,3 +36,7 @@ jobs:
 
       - name: Reproduce experiment
         run: python experiments/run_thresholding_comparison.py --output results
+
+      - name: Reproduce inspected public workflow
+        if: matrix.python-version == '3.12'
+        run: python experiments/run_inspected_public_sample.py
