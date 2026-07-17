@@ -56,7 +56,8 @@ def _fit_thumbnail(
     return canvas
 
 
-def _label_panel(image: np.ndarray, label: str) -> np.ndarray:
+def label_panel(image: np.ndarray, label: str) -> np.ndarray:
+    """Fit an image to a labeled grayscale comparison panel."""
     thumbnail = _fit_thumbnail(image)
     panel = cv2.copyMakeBorder(
         thumbnail,
@@ -146,15 +147,15 @@ def evaluate_real_images(
         comparison_rows.append(
             cv2.hconcat(
                 [
-                    _label_panel(image, f"{image_path.name}: grayscale"),
-                    _label_panel(
+                    label_panel(image, f"{image_path.name}: grayscale"),
+                    label_panel(
                         fixed_result.mask,
                         (
                             f"fixed T={fixed_result.threshold:.0f}, "
                             f"fg={fixed_record.foreground_fraction:.2f}"
                         ),
                     ),
-                    _label_panel(
+                    label_panel(
                         otsu_result.mask,
                         (
                             f"Otsu T={otsu_result.threshold:.0f}, "

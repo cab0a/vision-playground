@@ -4,13 +4,13 @@
 
 ## Overview
 
-Vision Playground contains small, reproducible computer vision experiments organized around a research question, an implementation, and a quantitative evaluation.
+Vision Playground contains small, reproducible computer vision experiments organized around a research question, an implementation, and an evaluation.
 
-The first experiment compares a fixed global threshold, Otsu's global method, and Gaussian adaptive thresholding on deterministic synthetic images. Synthetic inputs keep the experiment public, reproducible, and independent of private datasets.
+The thresholding study compares a fixed global threshold, Otsu's global method, and Gaussian adaptive thresholding on deterministic synthetic images. A parameter grid measures adaptive-threshold sensitivity, while freely reusable photographs provide a separate qualitative check.
 
 ## Research Question
 
-How do fixed, histogram-based, and locally adaptive thresholds behave when foreground contrast, noise, and illumination change?
+How do fixed, histogram-based, and locally adaptive thresholds behave when foreground contrast, noise, illumination, and adaptive parameters change?
 
 ## Hypothesis
 
@@ -27,6 +27,8 @@ The experiment compares three OpenCV implementations:
 Otsu's method selects a single threshold from the image histogram. It removes the need to choose the value manually, but it remains a global method.
 
 The adaptive method calculates a separate threshold for each pixel from its neighborhood. The reference block size is intentionally larger than the main foreground structures in the 256 × 256 synthetic images. A negative `C` raises the local threshold by 10 intensity levels because OpenCV subtracts `C` from the weighted neighborhood value. This is one geometry-aware experimental configuration, not a universal default.
+
+The sensitivity analysis evaluates 30 adaptive configurations: block sizes `31`, `63`, `95`, `127`, `159`, and `191`, crossed with `C` values `-15`, `-10`, `-5`, `0`, and `5`. The same deterministic scenarios and pixel-level metrics are used for every configuration.
 
 ## Synthetic Dataset
 
@@ -85,9 +87,30 @@ Use `--adaptive-block-size` and `--adaptive-c` to run an alternative shared adap
 
 The generated comparison image and metrics table are committed with the repository so the evaluated outputs are visible without running the code.
 
+## Adaptive Parameter Sensitivity
+
+The parameter grid produces 120 evaluations and an IoU heatmap:
+
+```bash
+python experiments/run_adaptive_sensitivity.py --output results
+```
+
+| Scenario | Best tested block size | Best tested C | IoU | F1 |
+| --- | ---: | ---: | ---: | ---: |
+| `uniform_clean` | 127 | -5 | 1.000 | 1.000 |
+| `shifted_low_contrast` | 191 | -10 | 0.692 | 0.818 |
+| `uneven_illumination` | 191 | -10 | 0.974 | 0.987 |
+| `high_noise` | 191 | -15 | 0.684 | 0.812 |
+
+![Adaptive sensitivity heatmap](results/adaptive_sensitivity_heatmap.png)
+
+Larger neighborhoods improve the tested uneven-illumination condition because they capture background variation across a wider spatial scale. They also improve the low-contrast and high-noise cases within this grid, but the best `C` differs by condition. The highest mean IoU across all four scenarios is `0.830` at `block = 191, C = -10`; this aggregate does not make the configuration optimal for every scenario.
+
+The full [sensitivity metrics](results/adaptive_sensitivity_metrics.csv) preserve every evaluated configuration. The result demonstrates why adaptive parameters should be selected against representative conditions rather than copied as universal defaults.
+
 ## Public Image Sample
 
-The two global methods are also applied to five CC0 or public-domain photographs from the scikit-image sample data. Adaptive thresholding remains isolated in the controlled synthetic experiment so its behavior can be evaluated against ground truth before extending the qualitative sample.
+The two global methods are also applied to five CC0 or public-domain photographs from the scikit-image sample data.
 
 ```bash
 python experiments/run_public_image_sample.py
@@ -96,6 +119,20 @@ python experiments/run_public_image_sample.py
 ![Public image thresholding comparison](results/public_sample/thresholding_comparison.jpg)
 
 These photographs do not include semantic ground-truth masks, so the example reports the selected threshold and foreground fraction without claiming segmentation accuracy. It is a qualitative check of how the methods behave on varied scenes. See the [public sample analysis and attribution](results/public_sample/README.md) for the detailed interpretation and licenses.
+
+## Adaptive Public Image Sample
+
+The same public photographs provide a qualitative one-factor-at-a-time comparison of adaptive block size and `C`:
+
+```bash
+python experiments/run_adaptive_public_sample.py
+```
+
+![Adaptive public image comparison](results/adaptive_public_sample/adaptive_parameter_comparison.jpg)
+
+At `C = -10`, increasing the block size from `31` to `191` increases the foreground fraction in all five samples. Changing `C` from `-10` to `5` at block size `127` produces a larger shift, including `4.57%` to `91.60%` on the smooth clock image. These are behavioral diagnostics, not accuracy results.
+
+See the [adaptive public sample analysis](results/adaptive_public_sample/README.md) for the configurations, quantitative summary, interpretation, and data provenance.
 
 ## Inspected Research Workflow
 
@@ -126,6 +163,7 @@ source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install ".[dev]"
 python experiments/run_thresholding_comparison.py --output results
+python experiments/run_adaptive_sensitivity.py --output results
 python -m pytest
 ```
 
@@ -138,12 +176,18 @@ Metrics: results/thresholding_metrics.csv
 Comparison: results/thresholding_comparison.png
 ```
 
+The public-image commands download checksum-verified, freely reusable samples and require network access on their first run.
+
 ## Output
 
 The experiment writes:
 
 - `results/thresholding_metrics.csv`: global thresholds, adaptive parameters, and evaluation metrics
 - `results/thresholding_comparison.png`: input, ground truth, and predicted masks
+- `results/adaptive_sensitivity_metrics.csv`: all adaptive parameter-grid evaluations
+- `results/adaptive_sensitivity_heatmap.png`: scenario-level IoU sensitivity
+- `results/adaptive_public_sample/adaptive_parameter_summary.csv`: public-image foreground fractions
+- `results/adaptive_public_sample/adaptive_parameter_comparison.jpg`: qualitative adaptive outputs
 - `results/inspected_public_sample/input_inspection.csv`: input audit from Image Dataset Inspector
 - `results/inspected_public_sample/workflow_summary.csv`: joined inspection and thresholding diagnostics
 
@@ -155,10 +199,16 @@ vision-playground/
 │   └── workflows/
 │       └── ci.yml
 ├── experiments/
+│   ├── run_adaptive_public_sample.py
+│   ├── run_adaptive_sensitivity.py
 │   ├── run_inspected_public_sample.py
 │   ├── run_public_image_sample.py
 │   └── run_thresholding_comparison.py
 ├── results/
+│   ├── adaptive_public_sample/
+│   │   ├── README.md
+│   │   ├── adaptive_parameter_comparison.jpg
+│   │   └── adaptive_parameter_summary.csv
 │   ├── inspected_public_sample/
 │   │   ├── README.md
 │   │   ├── input_inspection.csv
@@ -169,21 +219,27 @@ vision-playground/
 │   │   ├── README.md
 │   │   ├── thresholding_comparison.jpg
 │   │   └── thresholding_summary.csv
+│   ├── adaptive_sensitivity_heatmap.png
+│   ├── adaptive_sensitivity_metrics.csv
 │   ├── thresholding_comparison.png
 │   └── thresholding_metrics.csv
 ├── src/
 │   └── vision_playground/
 │       ├── __init__.py
+│       ├── adaptive_sample.py
 │       ├── evaluation.py
 │       ├── experiment.py
 │       ├── real_images.py
+│       ├── sensitivity.py
 │       ├── synthetic.py
 │       ├── thresholding.py
 │       └── workflow.py
 ├── tests/
+│   ├── test_adaptive_sample.py
 │   ├── test_evaluation.py
 │   ├── test_experiment.py
 │   ├── test_real_images.py
+│   ├── test_sensitivity.py
 │   ├── test_synthetic.py
 │   ├── test_thresholding.py
 │   └── test_workflow.py
@@ -199,14 +255,15 @@ vision-playground/
 - IoU and F1 measure agreement with the generated masks, not downstream task performance.
 - The fixed and Otsu methods use one global threshold and are expected to struggle under spatially varying illumination.
 - The selected fixed threshold is intentionally not tuned per scenario.
-- The adaptive block size and `C` are fixed across scenarios, but they are matched to the scale and intensity structure of the synthetic generator.
+- The reference comparison uses one adaptive configuration across scenarios; the separate sensitivity grid is finite and tuned to the scale of the synthetic generator.
 - Adaptive thresholding can amplify local noise or remove foreground interiors when its neighborhood and offset do not match the image structure.
+- Foreground fraction on the public photographs describes output behavior but is not a segmentation-quality metric.
 - Conclusions are limited to the generated conditions and should be validated on task-specific public data before practical use.
 - The inspected workflow requires unique basenames for valid input images when results are joined.
 
 ## Roadmap
 
-Possible later experiments include denoising before thresholding, parameter sensitivity analysis for adaptive thresholding, and edge detection under controlled noise. They remain separate experiments so each research question can be evaluated independently.
+Possible later experiments include denoising before thresholding, edge detection under controlled noise, and validation on a public dataset with task-specific ground truth. They remain separate experiments so each research question can be evaluated independently.
 
 ## References
 

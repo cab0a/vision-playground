@@ -37,6 +37,13 @@ jobs:
       - name: Reproduce experiment
         run: python experiments/run_thresholding_comparison.py --output results
 
+      - name: Reproduce adaptive sensitivity analysis
+        run: python experiments/run_adaptive_sensitivity.py --output results
+
       - name: Reproduce inspected public workflow
         if: matrix.python-version == '3.12'
         run: python experiments/run_inspected_public_sample.py
+
+      - name: Reproduce adaptive public sample
+        if: matrix.python-version == '3.12'
+        run: python experiments/run_adaptive_public_sample.py

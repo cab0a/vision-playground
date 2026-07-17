@@ -8,3 +8,4 @@ build/
 dist/
 results/public_sample/images/
 results/inspected_public_sample/images/
+results/adaptive_public_sample/images/
