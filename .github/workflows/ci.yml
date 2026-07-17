@@ -40,6 +40,9 @@ jobs:
       - name: Reproduce adaptive sensitivity analysis
         run: python experiments/run_adaptive_sensitivity.py --output results
 
+      - name: Reproduce denoising comparison
+        run: python experiments/run_denoising_comparison.py --output results
+
       - name: Reproduce inspected public workflow
         if: matrix.python-version == '3.12'
         run: python experiments/run_inspected_public_sample.py
@@ -47,3 +50,7 @@ jobs:
       - name: Reproduce adaptive public sample
         if: matrix.python-version == '3.12'
         run: python experiments/run_adaptive_public_sample.py
+
+      - name: Reproduce denoising public sample
+        if: matrix.python-version == '3.12'
+        run: python experiments/run_denoising_public_sample.py

@@ -6,15 +6,19 @@
 
 Vision Playground contains small, reproducible computer vision experiments organized around a research question, an implementation, and an evaluation.
 
-The thresholding study compares a fixed global threshold, Otsu's global method, and Gaussian adaptive thresholding on deterministic synthetic images. A parameter grid measures adaptive-threshold sensitivity, while freely reusable photographs provide a separate qualitative check.
+The thresholding study compares a fixed global threshold, Otsu's global method, and Gaussian adaptive thresholding on deterministic synthetic images. A parameter grid measures adaptive-threshold sensitivity, and a denoising experiment evaluates preprocessing under controlled noise. Freely reusable photographs provide separate qualitative and stability checks.
 
 ## Research Question
 
 How do fixed, histogram-based, and locally adaptive thresholds behave when foreground contrast, noise, illumination, and adaptive parameters change?
 
+Can simple preprocessing make Otsu thresholding more stable under Gaussian and salt-and-pepper noise, and does filter choice matter?
+
 ## Hypothesis
 
 A fixed threshold should work well when foreground and background intensities are stable. Otsu's method should adapt when the global intensity distribution shifts. Adaptive thresholding should improve separation under uneven illumination, but its local estimates should remain sensitive to neighborhood scale, noise, and low contrast.
+
+Gaussian and median filtering should both reduce thresholding errors under the tested noise. Gaussian filtering should be strongest for Gaussian noise, while median filtering should better suppress isolated salt-and-pepper pixels.
 
 ## Methods
 
@@ -29,6 +33,8 @@ Otsu's method selects a single threshold from the image histogram. It removes th
 The adaptive method calculates a separate threshold for each pixel from its neighborhood. The reference block size is intentionally larger than the main foreground structures in the 256 × 256 synthetic images. A negative `C` raises the local threshold by 10 intensity levels because OpenCV subtracts `C` from the weighted neighborhood value. This is one geometry-aware experimental configuration, not a universal default.
 
 The sensitivity analysis evaluates 30 adaptive configurations: block sizes `31`, `63`, `95`, `127`, `159`, and `191`, crossed with `C` values `-15`, `-10`, `-5`, `0`, and `5`. The same deterministic scenarios and pixel-level metrics are used for every configuration.
+
+The denoising experiment fixes the downstream method to Otsu thresholding and changes only the preprocessing step: no filter, a 5 × 5 Gaussian filter, or a 5 × 5 median filter. It evaluates zero-mean Gaussian noise with standard deviation `45` and salt-and-pepper noise affecting `15%` of pixels.
 
 ## Synthetic Dataset
 
@@ -134,6 +140,41 @@ At `C = -10`, increasing the block size from `31` to `191` increases the foregro
 
 See the [adaptive public sample analysis](results/adaptive_public_sample/README.md) for the configurations, quantitative summary, interpretation, and data provenance.
 
+## Denoising Before Thresholding
+
+The controlled denoising experiment uses the same known geometric ground truth for two noise models:
+
+```bash
+python experiments/run_denoising_comparison.py --output results
+```
+
+| Noise | Denoising | Otsu threshold | IoU | F1 |
+| --- | --- | ---: | ---: | ---: |
+| Gaussian | None | 116 | 0.770 | 0.870 |
+| Gaussian | Gaussian 5 × 5 | 121 | 0.996 | 0.998 |
+| Gaussian | Median 5 × 5 | 120 | 0.993 | 0.996 |
+| Salt and pepper | None | 55 | 0.774 | 0.873 |
+| Salt and pepper | Gaussian 5 × 5 | 122 | 0.981 | 0.990 |
+| Salt and pepper | Median 5 × 5 | 55 | 0.992 | 0.996 |
+
+![Denoising comparison](results/denoising_comparison.png)
+
+Both filters substantially reduce pixel-level thresholding errors in these conditions. Gaussian filtering is best for the Gaussian-noise scenario, while median filtering is best for salt-and-pepper noise. The experiment isolates preprocessing choice by keeping the kernel size, clean intensity levels, ground truth, and downstream thresholding method fixed.
+
+The full [denoising metrics](results/denoising_metrics.csv) include precision and recall as well as IoU and F1.
+
+## Denoising Public Image Sample
+
+Two public photographs are corrupted with the same known noise models:
+
+```bash
+python experiments/run_denoising_public_sample.py
+```
+
+![Public image denoising comparison](results/denoising_public_sample/denoising_comparison.jpg)
+
+The output after each denoising method is compared with the clean-image Otsu mask. This reference-mask IoU measures threshold stability, not semantic segmentation accuracy. See the [public denoising analysis](results/denoising_public_sample/README.md) for the results, interpretation, limitations, and data provenance.
+
 ## Inspected Research Workflow
 
 An optional workflow connects [Image Dataset Inspector](https://github.com/cab0a/image-dataset-inspector) to the public-image experiment:
@@ -164,6 +205,7 @@ python -m pip install --upgrade pip
 python -m pip install ".[dev]"
 python experiments/run_thresholding_comparison.py --output results
 python experiments/run_adaptive_sensitivity.py --output results
+python experiments/run_denoising_comparison.py --output results
 python -m pytest
 ```
 
@@ -188,6 +230,10 @@ The experiment writes:
 - `results/adaptive_sensitivity_heatmap.png`: scenario-level IoU sensitivity
 - `results/adaptive_public_sample/adaptive_parameter_summary.csv`: public-image foreground fractions
 - `results/adaptive_public_sample/adaptive_parameter_comparison.jpg`: qualitative adaptive outputs
+- `results/denoising_metrics.csv`: denoising and Otsu metrics for controlled noise
+- `results/denoising_comparison.png`: synthetic denoising outputs
+- `results/denoising_public_sample/denoising_summary.csv`: public-image stability metrics
+- `results/denoising_public_sample/denoising_comparison.jpg`: public-image denoising outputs
 - `results/inspected_public_sample/input_inspection.csv`: input audit from Image Dataset Inspector
 - `results/inspected_public_sample/workflow_summary.csv`: joined inspection and thresholding diagnostics
 
@@ -201,6 +247,8 @@ vision-playground/
 ├── experiments/
 │   ├── run_adaptive_public_sample.py
 │   ├── run_adaptive_sensitivity.py
+│   ├── run_denoising_comparison.py
+│   ├── run_denoising_public_sample.py
 │   ├── run_inspected_public_sample.py
 │   ├── run_public_image_sample.py
 │   └── run_thresholding_comparison.py
@@ -209,6 +257,10 @@ vision-playground/
 │   │   ├── README.md
 │   │   ├── adaptive_parameter_comparison.jpg
 │   │   └── adaptive_parameter_summary.csv
+│   ├── denoising_public_sample/
+│   │   ├── README.md
+│   │   ├── denoising_comparison.jpg
+│   │   └── denoising_summary.csv
 │   ├── inspected_public_sample/
 │   │   ├── README.md
 │   │   ├── input_inspection.csv
@@ -221,12 +273,16 @@ vision-playground/
 │   │   └── thresholding_summary.csv
 │   ├── adaptive_sensitivity_heatmap.png
 │   ├── adaptive_sensitivity_metrics.csv
+│   ├── denoising_comparison.png
+│   ├── denoising_metrics.csv
 │   ├── thresholding_comparison.png
 │   └── thresholding_metrics.csv
 ├── src/
 │   └── vision_playground/
 │       ├── __init__.py
 │       ├── adaptive_sample.py
+│       ├── denoising.py
+│       ├── denoising_sample.py
 │       ├── evaluation.py
 │       ├── experiment.py
 │       ├── real_images.py
@@ -236,6 +292,8 @@ vision-playground/
 │       └── workflow.py
 ├── tests/
 │   ├── test_adaptive_sample.py
+│   ├── test_denoising.py
+│   ├── test_denoising_sample.py
 │   ├── test_evaluation.py
 │   ├── test_experiment.py
 │   ├── test_real_images.py
@@ -258,16 +316,25 @@ vision-playground/
 - The reference comparison uses one adaptive configuration across scenarios; the separate sensitivity grid is finite and tuned to the scale of the synthetic generator.
 - Adaptive thresholding can amplify local noise or remove foreground interiors when its neighborhood and offset do not match the image structure.
 - Foreground fraction on the public photographs describes output behavior but is not a segmentation-quality metric.
+- The denoising study uses two synthetic noise models, one severity per model, and one kernel size; it does not establish a universal filter choice.
+- Public-image reference-mask IoU measures consistency with Otsu's clean-image output, not agreement with human labels.
 - Conclusions are limited to the generated conditions and should be validated on task-specific public data before practical use.
 - The inspected workflow requires unique basenames for valid input images when results are joined.
 
-## Roadmap
+## Version Roadmap
 
-Possible later experiments include denoising before thresholding, edge detection under controlled noise, and validation on a public dataset with task-specific ground truth. They remain separate experiments so each research question can be evaluated independently.
+- `v0.6.0`: edge detection under controlled noise
+- `v0.7.0`: quantitative validation with a labeled public dataset
+- `v0.8.0`: cross-experiment summaries and consistent experiment interfaces
+- `v0.9.0`: documentation, API, and reproducibility review
+- `v1.0.0`: portfolio-ready stable baseline
+
+The sequence may change when experimental results reveal a more useful next question. Each version remains a focused, reproducible study rather than an accumulation of unrelated features.
 
 ## References
 
 - [OpenCV: Image Thresholding](https://docs.opencv.org/4.x/d7/d4d/tutorial_py_thresholding.html)
+- [OpenCV: Smoothing Images](https://docs.opencv.org/4.x/d4/d13/tutorial_py_filtering.html)
 - Nobuyuki Otsu, [A Threshold Selection Method from Gray-Level Histograms](https://doi.org/10.1109/TSMC.1979.4310076), 1979
 
 ## License

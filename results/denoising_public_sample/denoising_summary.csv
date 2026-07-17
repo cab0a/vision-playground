@@ -1,0 +1,13 @@
+filename,noise_type,denoising_method,kernel_size,otsu_threshold,reference_mask_iou,foreground_fraction
+camera.png,gaussian,none,,116.00,0.842209,0.595997
+camera.png,gaussian,gaussian,5,106.00,0.980365,0.677666
+camera.png,gaussian,median,5,102.00,0.976692,0.681725
+camera.png,salt_and_pepper,none,,104.00,0.891691,0.650909
+camera.png,salt_and_pepper,gaussian,5,106.00,0.973381,0.679890
+camera.png,salt_and_pepper,median,5,102.00,0.984225,0.681847
+coffee.png,gaussian,none,,108.00,0.642643,0.461546
+coffee.png,gaussian,gaussian,5,106.00,0.839642,0.475762
+coffee.png,gaussian,median,5,102.00,0.836689,0.499979
+coffee.png,salt_and_pepper,none,,114.00,0.758457,0.435029
+coffee.png,salt_and_pepper,gaussian,5,106.00,0.810552,0.503325
+coffee.png,salt_and_pepper,median,5,103.00,0.897384,0.487396

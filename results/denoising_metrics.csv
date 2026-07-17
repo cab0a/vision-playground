@@ -1,0 +1,7 @@
+noise_type,denoising_method,kernel_size,otsu_threshold,iou,precision,recall,f1
+gaussian,none,,116.00,0.769865,0.806397,0.944426,0.869970
+gaussian,gaussian,5,121.00,0.995788,0.997335,0.998444,0.997889
+gaussian,median,5,120.00,0.992586,0.995615,0.996943,0.996279
+salt_and_pepper,none,,55.00,0.774013,0.823527,0.927920,0.872612
+salt_and_pepper,gaussian,5,122.00,0.980573,0.987401,0.992998,0.990191
+salt_and_pepper,median,5,55.00,0.991744,0.996992,0.994720,0.995855
