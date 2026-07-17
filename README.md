@@ -289,6 +289,34 @@ Summary: results/experiment_summary.csv
 
 The values answer different research questions and are not directly comparable. The [experiment results index](results/README.md) defines the summary schema and links each value to detailed evidence.
 
+## Reproducibility Verification
+
+After running the core suite, verify the six deterministic numeric artifacts against the committed SHA-256 manifest:
+
+```bash
+vision-playground run all
+vision-playground verify
+```
+
+Expected verification:
+
+```text
+Verified files: 6
+Manifest: results/reproducibility_manifest.csv
+```
+
+The strict check covers metrics and the cross-experiment summary. Comparison images remain reviewable artifacts but are excluded from byte-level verification because image encoding can vary across OpenCV builds.
+
+See the [reproducibility guide](docs/reproducibility.md) for deterministic controls, dependency boundaries, data provenance, and the reviewed process for updating reference results.
+
+## Documentation
+
+- [Experiment design](docs/experiment-design.md): questions, controls, evidence types, and criteria for adding a study
+- [Result interpretation](docs/result-interpretation.md): metric definitions, valid comparisons, and claim boundaries
+- [Public API](docs/public-api.md): supported CLI commands, Python functions, errors, and compatibility scope
+- [Reproducibility](docs/reproducibility.md): environment, deterministic controls, checksums, and data provenance
+- [Changelog](CHANGELOG.md): version-by-version project evolution
+
 ## Inspected Research Workflow
 
 An optional workflow connects [Image Dataset Inspector](https://github.com/cab0a/image-dataset-inspector) to the public-image experiment:
@@ -319,6 +347,7 @@ python -m pip install --upgrade pip
 python -m pip install ".[dev]"
 vision-playground list
 vision-playground run all
+vision-playground verify
 python -m pytest
 ```
 
@@ -337,6 +366,7 @@ The public-image commands download checksum-verified, freely reusable samples an
 The experiment writes:
 
 - `results/experiment_summary.csv`: evidence-oriented index of all five core experiments
+- `results/reproducibility_manifest.csv`: SHA-256 identities for deterministic numeric artifacts
 - `results/thresholding_metrics.csv`: global thresholds, adaptive parameters, and evaluation metrics
 - `results/thresholding_comparison.png`: input, ground truth, and predicted masks
 - `results/adaptive_sensitivity_metrics.csv`: all adaptive parameter-grid evaluations
@@ -369,7 +399,13 @@ vision-playground/
 │       ├── trimaps/
 │       ├── README.md
 │       └── manifest.csv
+├── docs/
+│   ├── experiment-design.md
+│   ├── public-api.md
+│   ├── reproducibility.md
+│   └── result-interpretation.md
 ├── experiments/
+│   ├── create_reproducibility_manifest.py
 │   ├── run_adaptive_public_sample.py
 │   ├── run_adaptive_sensitivity.py
 │   ├── run_denoising_comparison.py
@@ -383,6 +419,7 @@ vision-playground/
 ├── results/
 │   ├── README.md
 │   ├── experiment_summary.csv
+│   ├── reproducibility_manifest.csv
 │   ├── adaptive_public_sample/
 │   │   ├── README.md
 │   │   ├── adaptive_parameter_comparison.jpg
@@ -430,6 +467,7 @@ vision-playground/
 │       ├── experiment.py
 │       ├── labeled_dataset.py
 │       ├── real_images.py
+│       ├── reproducibility.py
 │       ├── runner.py
 │       ├── sensitivity.py
 │       ├── synthetic.py
@@ -446,12 +484,14 @@ vision-playground/
 │   ├── test_experiment.py
 │   ├── test_labeled_dataset.py
 │   ├── test_real_images.py
+│   ├── test_reproducibility.py
 │   ├── test_runner.py
 │   ├── test_sensitivity.py
 │   ├── test_synthetic.py
 │   ├── test_thresholding.py
 │   └── test_workflow.py
 ├── .gitignore
+├── CHANGELOG.md
 ├── LICENSE
 ├── README.md
 └── pyproject.toml
@@ -479,7 +519,6 @@ vision-playground/
 
 ## Version Roadmap
 
-- `v0.9.0`: documentation, API, and reproducibility review
 - `v1.0.0`: portfolio-ready stable baseline
 
 The sequence may change when experimental results reveal a more useful next question. Each version remains a focused, reproducible study rather than an accumulation of unrelated features.

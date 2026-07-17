@@ -13,6 +13,16 @@ from vision_playground.experiment import run_thresholding_experiment
 from vision_playground.labeled_dataset import run_labeled_dataset_experiment
 from vision_playground.sensitivity import run_adaptive_sensitivity
 
+__all__ = [
+    "EXPERIMENTS",
+    "ExperimentDefinition",
+    "ExperimentOutcome",
+    "get_experiment",
+    "run_all_experiments",
+    "run_experiment",
+    "write_experiment_summary",
+]
+
 SUMMARY_COLUMNS = (
     "experiment",
     "question",

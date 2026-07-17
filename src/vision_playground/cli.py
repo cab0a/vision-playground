@@ -12,6 +12,9 @@ from vision_playground.runner import (
     run_all_experiments,
     run_experiment,
 )
+from vision_playground.reproducibility import (
+    verify_reproducibility_manifest,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -24,6 +27,22 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser(
         "list",
         help="List registered experiments and their research questions.",
+    )
+    verify_parser = subparsers.add_parser(
+        "verify",
+        help="Verify reproduced numeric results against the reference manifest.",
+    )
+    verify_parser.add_argument(
+        "--results",
+        type=Path,
+        default=Path("results"),
+        help="Directory containing reproduced result files.",
+    )
+    verify_parser.add_argument(
+        "--manifest",
+        type=Path,
+        default=None,
+        help="Manifest path; defaults to RESULTS/reproducibility_manifest.csv.",
     )
 
     run_parser = subparsers.add_parser(
@@ -65,6 +84,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         for definition in EXPERIMENTS:
             print(f"{definition.experiment_id}: {definition.title}")
             print(f"  {definition.question}")
+        return 0
+    if args.command == "verify":
+        manifest_path = (
+            args.manifest
+            if args.manifest is not None
+            else args.results / "reproducibility_manifest.csv"
+        )
+        entries = verify_reproducibility_manifest(
+            args.results,
+            manifest_path,
+        )
+        print(f"Verified files: {len(entries)}")
+        print(f"Manifest: {manifest_path}")
         return 0
 
     if args.experiment == "all":

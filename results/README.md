@@ -36,3 +36,14 @@ The reference values are intentionally scoped to specific questions and conditio
 | `visual_artifact` | Visual comparison, relative to this directory |
 
 The detailed CSV and image for each row remain the source of truth. The summary is an index for review, not a substitute for experiment-specific interpretation and limitations.
+
+## Reproducibility Check
+
+The [reproducibility manifest](reproducibility_manifest.csv) records SHA-256 digests and byte lengths for the five detailed metrics CSV files and the cross-experiment summary.
+
+```bash
+vision-playground run all
+vision-playground verify
+```
+
+Visual artifacts are intentionally excluded from strict byte-level verification. See the [reproducibility guide](../docs/reproducibility.md) for the scope and maintenance process.

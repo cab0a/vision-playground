@@ -69,3 +69,7 @@ jobs:
       - name: Reproduce unified experiment suite
         if: matrix.python-version == '3.12'
         run: vision-playground run all
+
+      - name: Verify numeric reference artifacts
+        if: matrix.python-version == '3.12'
+        run: vision-playground verify
