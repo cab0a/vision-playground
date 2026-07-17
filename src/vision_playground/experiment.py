@@ -12,6 +12,8 @@ import numpy as np
 from vision_playground.evaluation import calculate_binary_metrics
 from vision_playground.synthetic import generate_scenarios
 from vision_playground.thresholding import (
+    ThresholdResult,
+    apply_adaptive_threshold,
     apply_fixed_threshold,
     apply_otsu_threshold,
 )
@@ -20,6 +22,8 @@ CSV_COLUMNS = (
     "scenario",
     "method",
     "threshold",
+    "block_size",
+    "constant_c",
     "iou",
     "precision",
     "recall",
@@ -33,7 +37,9 @@ class ExperimentRecord:
 
     scenario: str
     method: str
-    threshold: float
+    threshold: float | None
+    block_size: int | None
+    constant_c: float | None
     iou: float
     precision: float
     recall: float
@@ -42,16 +48,16 @@ class ExperimentRecord:
 
 def _create_record(
     scenario_name: str,
-    method: str,
-    threshold: float,
-    predicted: np.ndarray,
+    result: ThresholdResult,
     ground_truth: np.ndarray,
 ) -> ExperimentRecord:
-    metrics = calculate_binary_metrics(predicted, ground_truth)
+    metrics = calculate_binary_metrics(result.mask, ground_truth)
     return ExperimentRecord(
         scenario=scenario_name,
-        method=method,
-        threshold=threshold,
+        method=result.method,
+        threshold=result.threshold,
+        block_size=result.block_size,
+        constant_c=result.constant_c,
         iou=metrics.iou,
         precision=metrics.precision,
         recall=metrics.recall,
@@ -93,7 +99,15 @@ def _write_metrics(records: list[ExperimentRecord], output_path: Path) -> None:
         writer.writeheader()
         for record in records:
             row = asdict(record)
-            row["threshold"] = f"{record.threshold:.2f}"
+            row["threshold"] = (
+                "" if record.threshold is None else f"{record.threshold:.2f}"
+            )
+            row["block_size"] = (
+                "" if record.block_size is None else record.block_size
+            )
+            row["constant_c"] = (
+                "" if record.constant_c is None else f"{record.constant_c:.2f}"
+            )
             for name in ("iou", "precision", "recall", "f1"):
                 row[name] = f"{getattr(record, name):.6f}"
             writer.writerow(row)
@@ -103,6 +117,8 @@ def run_thresholding_experiment(
     output_dir: Path,
     seed: int = 7,
     fixed_threshold: int = 127,
+    adaptive_block_size: int = 127,
+    adaptive_constant_c: float = -10.0,
 ) -> list[ExperimentRecord]:
     """Run all synthetic scenarios and write reproducible artifacts."""
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -115,21 +131,27 @@ def run_thresholding_experiment(
             threshold=fixed_threshold,
         )
         otsu_result = apply_otsu_threshold(scenario.image)
+        adaptive_result = apply_adaptive_threshold(
+            scenario.image,
+            block_size=adaptive_block_size,
+            constant_c=adaptive_constant_c,
+        )
 
         records.extend(
             [
                 _create_record(
                     scenario.name,
-                    fixed_result.method,
-                    fixed_result.threshold,
-                    fixed_result.mask,
+                    fixed_result,
                     scenario.ground_truth,
                 ),
                 _create_record(
                     scenario.name,
-                    otsu_result.method,
-                    otsu_result.threshold,
-                    otsu_result.mask,
+                    otsu_result,
+                    scenario.ground_truth,
+                ),
+                _create_record(
+                    scenario.name,
+                    adaptive_result,
                     scenario.ground_truth,
                 ),
             ]
@@ -142,11 +164,18 @@ def run_thresholding_experiment(
                     _label_panel(scenario.ground_truth, "ground truth"),
                     _label_panel(
                         fixed_result.mask,
-                        f"fixed: T={fixed_result.threshold:.0f}",
+                        f"fixed: T={fixed_threshold}",
                     ),
                     _label_panel(
                         otsu_result.mask,
                         f"Otsu: T={otsu_result.threshold:.0f}",
+                    ),
+                    _label_panel(
+                        adaptive_result.mask,
+                        (
+                            f"adaptive: b={adaptive_block_size}, "
+                            f"C={adaptive_constant_c:g}"
+                        ),
                     ),
                 ]
             )

@@ -12,7 +12,9 @@ from vision_playground.experiment import run_thresholding_experiment
 def build_parser() -> argparse.ArgumentParser:
     """Create the experiment command-line parser."""
     parser = argparse.ArgumentParser(
-        description="Compare fixed and Otsu thresholding on synthetic images."
+        description=(
+            "Compare fixed, Otsu, and adaptive thresholding on synthetic images."
+        )
     )
     parser.add_argument(
         "--output",
@@ -32,6 +34,18 @@ def build_parser() -> argparse.ArgumentParser:
         default=127,
         help="Threshold used by the fixed global method.",
     )
+    parser.add_argument(
+        "--adaptive-block-size",
+        type=int,
+        default=127,
+        help="Odd neighborhood size used by adaptive thresholding.",
+    )
+    parser.add_argument(
+        "--adaptive-c",
+        type=float,
+        default=-10.0,
+        help="Constant subtracted from the adaptive neighborhood statistic.",
+    )
     return parser
 
 
@@ -42,6 +56,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         output_dir=args.output,
         seed=args.seed,
         fixed_threshold=args.fixed_threshold,
+        adaptive_block_size=args.adaptive_block_size,
+        adaptive_constant_c=args.adaptive_c,
     )
     scenario_count = len({record.scenario for record in records})
 

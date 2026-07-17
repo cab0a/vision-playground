@@ -1,4 +1,4 @@
-"""Global thresholding methods used by the experiment."""
+"""Thresholding methods used by the experiment."""
 
 from __future__ import annotations
 
@@ -10,11 +10,13 @@ import numpy as np
 
 @dataclass(frozen=True, slots=True)
 class ThresholdResult:
-    """A binary prediction and the threshold used to create it."""
+    """A binary prediction and the parameters used to create it."""
 
     method: str
-    threshold: float
+    threshold: float | None
     mask: np.ndarray
+    block_size: int | None = None
+    constant_c: float | None = None
 
 
 def _validate_image(image: np.ndarray) -> None:
@@ -59,4 +61,33 @@ def apply_otsu_threshold(image: np.ndarray) -> ThresholdResult:
         method="otsu",
         threshold=float(used_threshold),
         mask=mask,
+    )
+
+
+def apply_adaptive_threshold(
+    image: np.ndarray,
+    block_size: int = 127,
+    constant_c: float = -10.0,
+) -> ThresholdResult:
+    """Apply Gaussian-weighted adaptive thresholding."""
+    _validate_image(image)
+    if block_size < 3 or block_size % 2 == 0:
+        raise ValueError("The adaptive block size must be an odd integer of at least 3.")
+    if not np.isfinite(constant_c):
+        raise ValueError("The adaptive constant must be finite.")
+
+    mask = cv2.adaptiveThreshold(
+        image,
+        255,
+        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        cv2.THRESH_BINARY,
+        block_size,
+        constant_c,
+    )
+    return ThresholdResult(
+        method="adaptive",
+        threshold=None,
+        mask=mask,
+        block_size=block_size,
+        constant_c=float(constant_c),
     )
