@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vision-playground"
-version = "0.7.0"
+version = "0.8.0"
 description = "Reproducible computer vision experiments with quantitative evaluation."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -14,6 +14,9 @@ dependencies = [
     "numpy>=1.23",
     "opencv-python-headless>=4.8",
 ]
+
+[project.scripts]
+vision-playground = "vision_playground.cli:main"
 
 [project.optional-dependencies]
 dev = [

@@ -1,0 +1,6 @@
+experiment,question,evaluations,summary_metric,reference_value,evidence_scope,metrics_path,visual_artifact
+thresholding,How do global and adaptive thresholds respond to controlled conditions?,12,IoU,0.846712,adaptive method on uneven_illumination,thresholding_metrics.csv,thresholding_comparison.png
+adaptive-sensitivity,How sensitive is adaptive thresholding to block size and C?,120,mean IoU,0.829692,"best tested shared configuration across four scenarios: block=191, C=-10",adaptive_sensitivity_metrics.csv,adaptive_sensitivity_heatmap.png
+denoising,Which simple filter best matches each controlled noise model?,6,IoU,0.991744,median filter under salt-and-pepper noise,denoising_metrics.csv,denoising_comparison.png
+edge-detection,How does preprocessing affect Canny edges under controlled noise?,9,F1,1.000000,median filter under salt-and-pepper noise,edge_detection_metrics.csv,edge_detection_comparison.png
+labeled-dataset,How do simple segmentation baselines compare with public labels?,18,mean IoU,0.745445,fixed-inset GrabCut across the selected six-image subset,labeled_public_dataset/labeled_dataset_metrics.csv,labeled_public_dataset/labeled_dataset_comparison.jpg

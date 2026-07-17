@@ -65,3 +65,7 @@ jobs:
       - name: Reproduce labeled public dataset evaluation
         if: matrix.python-version == '3.12'
         run: python experiments/run_labeled_dataset_evaluation.py
+
+      - name: Reproduce unified experiment suite
+        if: matrix.python-version == '3.12'
+        run: vision-playground run all

@@ -19,7 +19,7 @@
 
 Vision Playground contains small, reproducible computer vision experiments organized around a research question, an implementation, and an evaluation.
 
-The thresholding study compares a fixed global threshold, Otsu's global method, and Gaussian adaptive thresholding on deterministic synthetic images. Parameter sensitivity, denoising, and Canny edge detection experiments evaluate behavior under controlled conditions. Freely reusable photographs provide separate qualitative and stability checks, while a labeled Oxford-IIIT Pet subset supports pixel-level quantitative evaluation.
+The thresholding study compares a fixed global threshold, Otsu's global method, and Gaussian adaptive thresholding on deterministic synthetic images. Parameter sensitivity, denoising, and Canny edge detection experiments evaluate behavior under controlled conditions. Freely reusable photographs provide separate qualitative and stability checks, while a labeled Oxford-IIIT Pet subset supports pixel-level quantitative evaluation. A unified CLI makes the core experiments discoverable and reproducible through one interface.
 
 ## Research Question
 
@@ -252,6 +252,43 @@ The two Otsu polarities vary sharply by image because the pet is not consistentl
 
 See the [labeled evaluation report](results/labeled_public_dataset/README.md) for per-image interpretation, reproduction details, data provenance, and limitations.
 
+## Unified Experiment Interface
+
+The installed command exposes stable identifiers for the five core quantitative experiments:
+
+```bash
+vision-playground list
+vision-playground run thresholding
+vision-playground run adaptive-sensitivity
+vision-playground run denoising
+vision-playground run edge-detection
+vision-playground run labeled-dataset
+```
+
+Run every default configuration and create a cross-experiment index with:
+
+```bash
+vision-playground run all
+```
+
+Expected summary:
+
+```text
+Completed experiments: 5
+Evaluations: 165
+Summary: results/experiment_summary.csv
+```
+
+| Experiment | Evaluations | Metric | Reference value | Evidence scope |
+| --- | ---: | --- | ---: | --- |
+| `thresholding` | 12 | IoU | 0.847 | Adaptive method under uneven illumination |
+| `adaptive-sensitivity` | 120 | Mean IoU | 0.830 | Best tested shared configuration |
+| `denoising` | 6 | IoU | 0.992 | Median filter under salt-and-pepper noise |
+| `edge-detection` | 9 | F1 | 1.000 | Median filter under salt-and-pepper noise |
+| `labeled-dataset` | 18 | Mean IoU | 0.745 | GrabCut on the selected six-image subset |
+
+The values answer different research questions and are not directly comparable. The [experiment results index](results/README.md) defines the summary schema and links each value to detailed evidence.
+
 ## Inspected Research Workflow
 
 An optional workflow connects [Image Dataset Inspector](https://github.com/cab0a/image-dataset-inspector) to the public-image experiment:
@@ -280,21 +317,17 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install ".[dev]"
-python experiments/run_thresholding_comparison.py --output results
-python experiments/run_adaptive_sensitivity.py --output results
-python experiments/run_denoising_comparison.py --output results
-python experiments/run_edge_detection_comparison.py --output results
-python experiments/run_labeled_dataset_evaluation.py
+vision-playground list
+vision-playground run all
 python -m pytest
 ```
 
 Expected experiment summary:
 
 ```text
-Scenarios: 4
-Evaluations: 12
-Metrics: results/thresholding_metrics.csv
-Comparison: results/thresholding_comparison.png
+Completed experiments: 5
+Evaluations: 165
+Summary: results/experiment_summary.csv
 ```
 
 The public-image commands download checksum-verified, freely reusable samples and require network access on their first run.
@@ -303,6 +336,7 @@ The public-image commands download checksum-verified, freely reusable samples an
 
 The experiment writes:
 
+- `results/experiment_summary.csv`: evidence-oriented index of all five core experiments
 - `results/thresholding_metrics.csv`: global thresholds, adaptive parameters, and evaluation metrics
 - `results/thresholding_comparison.png`: input, ground truth, and predicted masks
 - `results/adaptive_sensitivity_metrics.csv`: all adaptive parameter-grid evaluations
@@ -347,6 +381,8 @@ vision-playground/
 │   ├── run_public_image_sample.py
 │   └── run_thresholding_comparison.py
 ├── results/
+│   ├── README.md
+│   ├── experiment_summary.csv
 │   ├── adaptive_public_sample/
 │   │   ├── README.md
 │   │   ├── adaptive_parameter_comparison.jpg
@@ -385,6 +421,7 @@ vision-playground/
 │   └── vision_playground/
 │       ├── __init__.py
 │       ├── adaptive_sample.py
+│       ├── cli.py
 │       ├── denoising.py
 │       ├── denoising_sample.py
 │       ├── edge_detection.py
@@ -393,12 +430,14 @@ vision-playground/
 │       ├── experiment.py
 │       ├── labeled_dataset.py
 │       ├── real_images.py
+│       ├── runner.py
 │       ├── sensitivity.py
 │       ├── synthetic.py
 │       ├── thresholding.py
 │       └── workflow.py
 ├── tests/
 │   ├── test_adaptive_sample.py
+│   ├── test_cli.py
 │   ├── test_denoising.py
 │   ├── test_denoising_sample.py
 │   ├── test_edge_detection.py
@@ -407,6 +446,7 @@ vision-playground/
 │   ├── test_experiment.py
 │   ├── test_labeled_dataset.py
 │   ├── test_real_images.py
+│   ├── test_runner.py
 │   ├── test_sensitivity.py
 │   ├── test_synthetic.py
 │   ├── test_thresholding.py
@@ -433,12 +473,12 @@ vision-playground/
 - The labeled public evaluation uses six selected images and cannot support dataset-wide or breed-level claims.
 - The fixed-inset GrabCut baseline assumes that the subject is separated from the image boundary.
 - Dataset labels are used only for evaluation, but the chosen subset and metric policy still influence the reported result.
+- Cross-experiment reference values have different targets and aggregation policies and must not be interpreted as a ranking.
 - Conclusions are limited to the generated conditions and should be validated on task-specific public data before practical use.
 - The inspected workflow requires unique basenames for valid input images when results are joined.
 
 ## Version Roadmap
 
-- `v0.8.0`: cross-experiment summaries and consistent experiment interfaces
 - `v0.9.0`: documentation, API, and reproducibility review
 - `v1.0.0`: portfolio-ready stable baseline
 
