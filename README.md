@@ -6,7 +6,7 @@
 
 Vision Playground contains small, reproducible computer vision experiments organized around a research question, an implementation, and an evaluation.
 
-The thresholding study compares a fixed global threshold, Otsu's global method, and Gaussian adaptive thresholding on deterministic synthetic images. A parameter grid measures adaptive-threshold sensitivity, and a denoising experiment evaluates preprocessing under controlled noise. Freely reusable photographs provide separate qualitative and stability checks.
+The thresholding study compares a fixed global threshold, Otsu's global method, and Gaussian adaptive thresholding on deterministic synthetic images. Parameter sensitivity, denoising, and Canny edge detection experiments evaluate behavior under controlled conditions. Freely reusable photographs provide separate qualitative and stability checks.
 
 ## Research Question
 
@@ -14,11 +14,15 @@ How do fixed, histogram-based, and locally adaptive thresholds behave when foreg
 
 Can simple preprocessing make Otsu thresholding more stable under Gaussian and salt-and-pepper noise, and does filter choice matter?
 
+How does controlled noise affect Canny edge detection, and how much can simple denoising recover?
+
 ## Hypothesis
 
 A fixed threshold should work well when foreground and background intensities are stable. Otsu's method should adapt when the global intensity distribution shifts. Adaptive thresholding should improve separation under uneven illumination, but its local estimates should remain sensitive to neighborhood scale, noise, and low contrast.
 
 Gaussian and median filtering should both reduce thresholding errors under the tested noise. Gaussian filtering should be strongest for Gaussian noise, while median filtering should better suppress isolated salt-and-pepper pixels.
+
+Canny should produce many false edges when noise is not removed. Noise-matched preprocessing should improve precision while retaining the main boundaries.
 
 ## Methods
 
@@ -35,6 +39,8 @@ The adaptive method calculates a separate threshold for each pixel from its neig
 The sensitivity analysis evaluates 30 adaptive configurations: block sizes `31`, `63`, `95`, `127`, `159`, and `191`, crossed with `C` values `-15`, `-10`, `-5`, `0`, and `5`. The same deterministic scenarios and pixel-level metrics are used for every configuration.
 
 The denoising experiment fixes the downstream method to Otsu thresholding and changes only the preprocessing step: no filter, a 5 × 5 Gaussian filter, or a 5 × 5 median filter. It evaluates zero-mean Gaussian noise with standard deviation `45` and salt-and-pepper noise affecting `15%` of pixels.
+
+The edge experiment applies Canny with thresholds `125` and `250` after the same preprocessing options. Predicted boundaries are evaluated with a two-pixel positional tolerance so minor rasterization shifts do not dominate the result.
 
 ## Synthetic Dataset
 
@@ -175,6 +181,42 @@ python experiments/run_denoising_public_sample.py
 
 The output after each denoising method is compared with the clean-image Otsu mask. This reference-mask IoU measures threshold stability, not semantic segmentation accuracy. See the [public denoising analysis](results/denoising_public_sample/README.md) for the results, interpretation, limitations, and data provenance.
 
+## Edge Detection Under Controlled Noise
+
+The Canny experiment evaluates clean, Gaussian-noise, and salt-and-pepper conditions:
+
+```bash
+python experiments/run_edge_detection_comparison.py --output results
+```
+
+| Condition | Denoising | Edge pixels | Precision | Recall | F1 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Clean | None | 987 | 1.000 | 1.000 | 1.000 |
+| Gaussian noise | None | 23,565 | 0.068 | 1.000 | 0.127 |
+| Gaussian noise | Gaussian 5 × 5 | 1,171 | 0.910 | 1.000 | 0.953 |
+| Gaussian noise | Median 5 × 5 | 1,224 | 0.897 | 1.000 | 0.946 |
+| Salt and pepper | None | 19,492 | 0.081 | 1.000 | 0.151 |
+| Salt and pepper | Gaussian 5 × 5 | 4,659 | 0.251 | 1.000 | 0.401 |
+| Salt and pepper | Median 5 × 5 | 985 | 1.000 | 1.000 | 1.000 |
+
+![Controlled edge detection comparison](results/edge_detection_comparison.png)
+
+The unfiltered noisy images preserve the true boundary neighborhoods but create many false edges, producing high recall and very low precision. Gaussian filtering recovers the Gaussian-noise condition, while median filtering removes the isolated salt-and-pepper responses in this synthetic case.
+
+The [edge metrics CSV](results/edge_detection_metrics.csv) includes all nine evaluations, thresholds, tolerance, edge counts, precision, recall, and F1.
+
+## Edge Detection Public Image Sample
+
+The same controlled noise and preprocessing choices are applied to the camera and coffee photographs:
+
+```bash
+python experiments/run_edge_public_sample.py
+```
+
+![Public edge detection comparison](results/edge_public_sample/edge_detection_comparison.jpg)
+
+The public sample compares each noisy output with the clean-image Canny edge map. It measures algorithmic stability rather than agreement with human-labeled boundaries. See the [public edge analysis](results/edge_public_sample/README.md) for results, metric details, limitations, and provenance.
+
 ## Inspected Research Workflow
 
 An optional workflow connects [Image Dataset Inspector](https://github.com/cab0a/image-dataset-inspector) to the public-image experiment:
@@ -206,6 +248,7 @@ python -m pip install ".[dev]"
 python experiments/run_thresholding_comparison.py --output results
 python experiments/run_adaptive_sensitivity.py --output results
 python experiments/run_denoising_comparison.py --output results
+python experiments/run_edge_detection_comparison.py --output results
 python -m pytest
 ```
 
@@ -234,6 +277,10 @@ The experiment writes:
 - `results/denoising_comparison.png`: synthetic denoising outputs
 - `results/denoising_public_sample/denoising_summary.csv`: public-image stability metrics
 - `results/denoising_public_sample/denoising_comparison.jpg`: public-image denoising outputs
+- `results/edge_detection_metrics.csv`: controlled Canny boundary metrics
+- `results/edge_detection_comparison.png`: synthetic edge detection outputs
+- `results/edge_public_sample/edge_detection_summary.csv`: public-image edge stability metrics
+- `results/edge_public_sample/edge_detection_comparison.jpg`: public-image edge outputs
 - `results/inspected_public_sample/input_inspection.csv`: input audit from Image Dataset Inspector
 - `results/inspected_public_sample/workflow_summary.csv`: joined inspection and thresholding diagnostics
 
@@ -249,6 +296,8 @@ vision-playground/
 │   ├── run_adaptive_sensitivity.py
 │   ├── run_denoising_comparison.py
 │   ├── run_denoising_public_sample.py
+│   ├── run_edge_detection_comparison.py
+│   ├── run_edge_public_sample.py
 │   ├── run_inspected_public_sample.py
 │   ├── run_public_image_sample.py
 │   └── run_thresholding_comparison.py
@@ -261,6 +310,10 @@ vision-playground/
 │   │   ├── README.md
 │   │   ├── denoising_comparison.jpg
 │   │   └── denoising_summary.csv
+│   ├── edge_public_sample/
+│   │   ├── README.md
+│   │   ├── edge_detection_comparison.jpg
+│   │   └── edge_detection_summary.csv
 │   ├── inspected_public_sample/
 │   │   ├── README.md
 │   │   ├── input_inspection.csv
@@ -275,6 +328,8 @@ vision-playground/
 │   ├── adaptive_sensitivity_metrics.csv
 │   ├── denoising_comparison.png
 │   ├── denoising_metrics.csv
+│   ├── edge_detection_comparison.png
+│   ├── edge_detection_metrics.csv
 │   ├── thresholding_comparison.png
 │   └── thresholding_metrics.csv
 ├── src/
@@ -283,6 +338,8 @@ vision-playground/
 │       ├── adaptive_sample.py
 │       ├── denoising.py
 │       ├── denoising_sample.py
+│       ├── edge_detection.py
+│       ├── edge_sample.py
 │       ├── evaluation.py
 │       ├── experiment.py
 │       ├── real_images.py
@@ -294,6 +351,8 @@ vision-playground/
 │   ├── test_adaptive_sample.py
 │   ├── test_denoising.py
 │   ├── test_denoising_sample.py
+│   ├── test_edge_detection.py
+│   ├── test_edge_sample.py
 │   ├── test_evaluation.py
 │   ├── test_experiment.py
 │   ├── test_real_images.py
@@ -318,12 +377,13 @@ vision-playground/
 - Foreground fraction on the public photographs describes output behavior but is not a segmentation-quality metric.
 - The denoising study uses two synthetic noise models, one severity per model, and one kernel size; it does not establish a universal filter choice.
 - Public-image reference-mask IoU measures consistency with Otsu's clean-image output, not agreement with human labels.
+- Edge reference F1 uses a dilation-based positional tolerance without one-to-one boundary matching.
+- Public-image edge references are Canny outputs rather than human annotations.
 - Conclusions are limited to the generated conditions and should be validated on task-specific public data before practical use.
 - The inspected workflow requires unique basenames for valid input images when results are joined.
 
 ## Version Roadmap
 
-- `v0.6.0`: edge detection under controlled noise
 - `v0.7.0`: quantitative validation with a labeled public dataset
 - `v0.8.0`: cross-experiment summaries and consistent experiment interfaces
 - `v0.9.0`: documentation, API, and reproducibility review
@@ -335,6 +395,7 @@ The sequence may change when experimental results reveal a more useful next ques
 
 - [OpenCV: Image Thresholding](https://docs.opencv.org/4.x/d7/d4d/tutorial_py_thresholding.html)
 - [OpenCV: Smoothing Images](https://docs.opencv.org/4.x/d4/d13/tutorial_py_filtering.html)
+- [OpenCV: Canny Edge Detection](https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html)
 - Nobuyuki Otsu, [A Threshold Selection Method from Gray-Level Histograms](https://doi.org/10.1109/TSMC.1979.4310076), 1979
 
 ## License

@@ -110,6 +110,13 @@ def apply_denoising(
     raise ValueError(f"Unsupported denoising method: {method}")
 
 
+def create_clean_shape_image(size: int = 256) -> tuple[np.ndarray, np.ndarray]:
+    """Create a two-level grayscale image and its binary ground truth."""
+    ground_truth = create_ground_truth(size)
+    clean_image = np.where(ground_truth != 0, 190, 55).astype(np.uint8)
+    return clean_image, ground_truth
+
+
 def generate_denoising_scenarios(
     size: int = 256,
     seed: int = 17,
@@ -117,8 +124,7 @@ def generate_denoising_scenarios(
     salt_and_pepper_fraction: float = 0.15,
 ) -> tuple[DenoisingScenario, ...]:
     """Generate comparable Gaussian and salt-and-pepper noise conditions."""
-    ground_truth = create_ground_truth(size)
-    clean_image = np.where(ground_truth != 0, 190, 55).astype(np.uint8)
+    clean_image, ground_truth = create_clean_shape_image(size)
     rng = np.random.default_rng(seed)
     gaussian_image = add_gaussian_noise(
         clean_image,

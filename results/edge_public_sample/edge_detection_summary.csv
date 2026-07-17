@@ -1,0 +1,13 @@
+filename,noise_type,denoising_method,kernel_size,low_threshold,high_threshold,tolerance_pixels,edge_pixels,reference_edge_f1,precision,recall
+camera.png,gaussian,none,,125,250,2,93094,0.348383,0.210948,0.999700
+camera.png,gaussian,gaussian,5,125,250,2,8501,0.717186,0.894248,0.598652
+camera.png,gaussian,median,5,125,250,2,7141,0.647802,0.903515,0.504905
+camera.png,salt_and_pepper,none,,125,250,2,89219,0.366964,0.224717,0.999925
+camera.png,salt_and_pepper,gaussian,5,125,250,2,24629,0.485016,0.376507,0.681393
+camera.png,salt_and_pepper,median,5,125,250,2,6024,0.671279,0.998838,0.505504
+coffee.png,gaussian,none,,125,250,2,85738,0.407687,0.256047,0.999806
+coffee.png,gaussian,gaussian,5,125,250,2,10442,0.691132,0.817947,0.598361
+coffee.png,gaussian,median,5,125,250,2,6700,0.552180,0.855821,0.407575
+coffee.png,salt_and_pepper,none,,125,250,2,85858,0.410768,0.258508,0.999419
+coffee.png,salt_and_pepper,gaussian,5,125,250,2,22213,0.542329,0.457435,0.665914
+coffee.png,salt_and_pepper,median,5,125,250,2,5599,0.572050,0.978568,0.404155

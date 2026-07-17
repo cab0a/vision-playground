@@ -1,0 +1,10 @@
+condition,denoising_method,kernel_size,low_threshold,high_threshold,tolerance_pixels,edge_pixels,precision,recall,f1
+clean,none,,125,250,2,987,1.000000,1.000000,1.000000
+clean,gaussian,5,125,250,2,1005,1.000000,1.000000,1.000000
+clean,median,5,125,250,2,980,1.000000,1.000000,1.000000
+gaussian,none,,125,250,2,23565,0.067940,1.000000,0.127235
+gaussian,gaussian,5,125,250,2,1171,0.910333,1.000000,0.953062
+gaussian,median,5,125,250,2,1224,0.897059,1.000000,0.945736
+salt_and_pepper,none,,125,250,2,19492,0.081418,1.000000,0.150576
+salt_and_pepper,gaussian,5,125,250,2,4659,0.251127,1.000000,0.401441
+salt_and_pepper,median,5,125,250,2,985,1.000000,1.000000,1.000000

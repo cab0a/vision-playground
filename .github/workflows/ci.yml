@@ -43,6 +43,9 @@ jobs:
       - name: Reproduce denoising comparison
         run: python experiments/run_denoising_comparison.py --output results
 
+      - name: Reproduce edge detection comparison
+        run: python experiments/run_edge_detection_comparison.py --output results
+
       - name: Reproduce inspected public workflow
         if: matrix.python-version == '3.12'
         run: python experiments/run_inspected_public_sample.py
@@ -54,3 +57,7 @@ jobs:
       - name: Reproduce denoising public sample
         if: matrix.python-version == '3.12'
         run: python experiments/run_denoising_public_sample.py
+
+      - name: Reproduce edge detection public sample
+        if: matrix.python-version == '3.12'
+        run: python experiments/run_edge_public_sample.py
