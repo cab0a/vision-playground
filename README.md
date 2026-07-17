@@ -74,6 +74,18 @@ python experiments/run_thresholding_comparison.py --output results
 
 The generated comparison image and metrics table are committed with the repository so the evaluated outputs are visible without running the code.
 
+## Public Image Sample
+
+The same two methods are also applied to five CC0 or public-domain photographs from the scikit-image sample data.
+
+```bash
+python experiments/run_public_image_sample.py
+```
+
+![Public image thresholding comparison](results/public_sample/thresholding_comparison.jpg)
+
+These photographs do not include semantic ground-truth masks, so the example reports the selected threshold and foreground fraction without claiming segmentation accuracy. It is a qualitative check of how the methods behave on varied scenes. See the [public sample analysis and attribution](results/public_sample/README.md) for the detailed interpretation and licenses.
+
 ## Quick Start
 
 Python 3.10 or later is required.
@@ -113,8 +125,13 @@ vision-playground/
 │   └── workflows/
 │       └── ci.yml
 ├── experiments/
+│   ├── run_public_image_sample.py
 │   └── run_thresholding_comparison.py
 ├── results/
+│   ├── public_sample/
+│   │   ├── README.md
+│   │   ├── thresholding_comparison.jpg
+│   │   └── thresholding_summary.csv
 │   ├── thresholding_comparison.png
 │   └── thresholding_metrics.csv
 ├── src/
@@ -122,11 +139,13 @@ vision-playground/
 │       ├── __init__.py
 │       ├── evaluation.py
 │       ├── experiment.py
+│       ├── real_images.py
 │       ├── synthetic.py
 │       └── thresholding.py
 ├── tests/
 │   ├── test_evaluation.py
 │   ├── test_experiment.py
+│   ├── test_real_images.py
 │   ├── test_synthetic.py
 │   └── test_thresholding.py
 ├── .gitignore

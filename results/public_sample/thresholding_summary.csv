@@ -1,0 +1,11 @@
+filename,method,threshold,foreground_fraction
+camera.png,fixed,127.00,0.643002
+camera.png,otsu,102.00,0.678955
+clock_motion.png,fixed,127.00,0.879500
+clock_motion.png,otsu,174.00,0.064917
+coffee.png,fixed,127.00,0.330983
+coffee.png,otsu,104.00,0.485267
+hubble_deep_field.jpg,fixed,127.00,0.018469
+hubble_deep_field.jpg,otsu,80.00,0.032195
+rocket.jpg,fixed,127.00,0.033244
+rocket.jpg,otsu,74.00,0.245942
