@@ -4,14 +4,13 @@
 
 ## What This Project Demonstrates
 
-- OpenCVによる画像処理
-- 再現可能な実験設計
-- IoU、Precision、Recall、F1による定量評価と比較
-- Pythonパッケージとしてのコード設計
-- pytestによる自動テスト
-- GitHub ActionsによるCI
-- 結果のCSV・比較画像出力
-- 評価結果、前提条件、限界のドキュメント化
+- Image processing with OpenCV
+- Reproducible experiment design
+- Quantitative comparison using IoU, precision, recall, and F1
+- Installable Python package and command-line interface
+- Automated tests with pytest and CI with GitHub Actions
+- Machine-readable CSV results and visual comparison artifacts
+- Documentation of results, assumptions, and limitations
 
 ![Thresholding comparison](results/thresholding_comparison.png)
 
@@ -20,6 +19,24 @@
 Vision Playground contains small, reproducible computer vision experiments organized around a research question, an implementation, and an evaluation.
 
 The thresholding study compares a fixed global threshold, Otsu's global method, and Gaussian adaptive thresholding on deterministic synthetic images. Parameter sensitivity, denoising, and Canny edge detection experiments evaluate behavior under controlled conditions. Freely reusable photographs provide separate qualitative and stability checks, while a labeled Oxford-IIIT Pet subset supports pixel-level quantitative evaluation. A unified CLI makes the core experiments discoverable and reproducible through one interface.
+
+Version 1.0 is the stable baseline for the documented command-line interface, Python runner API, experiment identifiers, and reproducibility manifest schema.
+
+## Engineering Approach
+
+`Research → Prototype → Evaluation → Interpretation`
+
+Each experiment starts with a narrow question, changes a controlled factor, records machine-readable metrics, and documents both the result and its limits. The focus is method selection and evidence, not a collection of disconnected demos.
+
+| Capability | Reviewable evidence |
+| --- | --- |
+| Technical research | Questions, hypotheses, references, and parameter studies |
+| Python and OpenCV implementation | Installable package, CLI, deterministic generators, and experiment modules |
+| Quantitative evaluation | Synthetic ground truth, public pixel labels, CSV metrics, and visual comparisons |
+| Failure analysis | Scenario-specific interpretation and explicit limitations |
+| Reproducibility | 165 core evaluations, SHA-256 result verification, tests, and Python 3.10–3.14 CI |
+
+For a short evidence-led tour, see the [review guide](docs/review-guide.md).
 
 ## Research Question
 
@@ -311,6 +328,7 @@ See the [reproducibility guide](docs/reproducibility.md) for deterministic contr
 
 ## Documentation
 
+- [Review guide](docs/review-guide.md): a short evidence-led path through the repository
 - [Experiment design](docs/experiment-design.md): questions, controls, evidence types, and criteria for adding a study
 - [Result interpretation](docs/result-interpretation.md): metric definitions, valid comparisons, and claim boundaries
 - [Public API](docs/public-api.md): supported CLI commands, Python functions, errors, and compatibility scope
@@ -345,6 +363,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install ".[dev]"
+vision-playground --version
 vision-playground list
 vision-playground run all
 vision-playground verify
@@ -403,6 +422,7 @@ vision-playground/
 │   ├── experiment-design.md
 │   ├── public-api.md
 │   ├── reproducibility.md
+│   ├── review-guide.md
 │   └── result-interpretation.md
 ├── experiments/
 │   ├── create_reproducibility_manifest.py
@@ -483,6 +503,7 @@ vision-playground/
 │   ├── test_evaluation.py
 │   ├── test_experiment.py
 │   ├── test_labeled_dataset.py
+│   ├── test_package.py
 │   ├── test_real_images.py
 │   ├── test_reproducibility.py
 │   ├── test_runner.py
@@ -517,11 +538,11 @@ vision-playground/
 - Conclusions are limited to the generated conditions and should be validated on task-specific public data before practical use.
 - The inspected workflow requires unique basenames for valid input images when results are joined.
 
-## Version Roadmap
+## Project Status
 
-- `v1.0.0`: portfolio-ready stable baseline
+Version 1.0 is the stable public baseline. Backward compatibility for the documented CLI, runner API, reproducibility API, experiment identifiers, dataclasses, and manifest schema follows the policy in the [public API guide](docs/public-api.md).
 
-The sequence may change when experimental results reveal a more useful next question. Each version remains a focused, reproducible study rather than an accumulation of unrelated features.
+Future work may expand labeled evaluation, add controlled studies for other computer vision tasks, or measure performance at larger input scales. Such work will remain separate, reproducible studies with explicit evidence boundaries.
 
 ## References
 

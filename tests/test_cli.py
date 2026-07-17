@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+import pytest
+
 from vision_playground.cli import main
 from vision_playground.reproducibility import (
     create_reproducibility_manifest,
@@ -14,6 +16,14 @@ def test_list_command_prints_registered_experiments(capsys) -> None:
     output = capsys.readouterr().out
     assert "thresholding:" in output
     assert "labeled-dataset:" in output
+
+
+def test_version_option_prints_package_version(capsys) -> None:
+    with pytest.raises(SystemExit) as error:
+        main(["--version"])
+
+    assert error.value.code == 0
+    assert capsys.readouterr().out == "vision-playground 1.0.0\n"
 
 
 def test_run_command_writes_default_artifacts(

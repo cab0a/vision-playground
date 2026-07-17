@@ -2,6 +2,21 @@
 
 All notable project changes are documented in this file.
 
+## [1.0.0]
+
+### Added
+
+- A concise review guide mapping research, implementation, evaluation, failure analysis, and reproducibility evidence.
+- `vision-playground --version`.
+- Package metadata and CLI version consistency tests.
+- Repository, issue tracker, and changelog URLs in package metadata.
+
+### Changed
+
+- Declared the documented CLI, Python APIs, experiment identifiers, dataclasses, and manifest schema stable.
+- Reworked the README opening and project status for an evidence-led portfolio review.
+- Added installed-command checks to every supported Python CI job.
+
 ## [0.9.0]
 
 ### Added

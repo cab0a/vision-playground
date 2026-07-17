@@ -6,6 +6,7 @@ import argparse
 from collections.abc import Sequence
 from pathlib import Path
 
+from vision_playground import __version__
 from vision_playground.runner import (
     EXPERIMENTS,
     ExperimentOutcome,
@@ -22,6 +23,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="vision-playground",
         description="Run reproducible computer vision experiments.",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser(

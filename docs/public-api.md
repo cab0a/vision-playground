@@ -110,6 +110,10 @@ An unreadable optional public sample is handled by its experiment-specific workf
 
 ## Compatibility
 
-During the `0.x` series, documented interfaces may change when the review identifies a clearer design. Such changes are recorded in [CHANGELOG.md](../CHANGELOG.md).
+Starting with v1.0, the commands, identifiers, functions, dataclasses, and manifest schema listed in this document form the stable public surface.
 
-The v1.0 compatibility commitment will cover the commands, identifiers, functions, dataclasses, and manifest schema listed in this document. Private names beginning with `_` are never part of that commitment.
+- Patch releases may fix defects and documentation without intentionally changing supported behavior.
+- Minor releases may add backward-compatible experiments, options, functions, or fields.
+- Breaking changes require a new major version and an explicit migration note.
+
+Private names beginning with `_`, standalone experiment-script arguments, and unlisted implementation modules are not part of the compatibility commitment. Numeric reference results may change after a documented method, parameter, data, or dependency review; such changes require an updated manifest and changelog entry.
