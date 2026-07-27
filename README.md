@@ -2,27 +2,80 @@
 
 [![CI](https://github.com/cab0a/vision-playground/actions/workflows/ci.yml/badge.svg)](https://github.com/cab0a/vision-playground/actions/workflows/ci.yml)
 
-## What This Project Demonstrates
-
-- Image processing with OpenCV
-- Reproducible experiment design
-- Quantitative comparison using IoU, precision, recall, and F1
-- Installable Python package and command-line interface
-- Automated tests with pytest and CI with GitHub Actions
-- Machine-readable CSV results and visual comparison artifacts
-- Documentation of results, assumptions, and limitations
-
-![Thresholding comparison](results/thresholding_comparison.png)
+Compare classical computer-vision methods under controlled conditions, then
+inspect their metrics, sensitivity, visual output, and failure cases.
 
 ## Overview
 
-Vision Playground contains small, reproducible computer vision experiments organized around a research question, an implementation, and an evaluation.
+Vision Playground contains small, reproducible computer-vision experiments
+organized around a research question, an implementation, and an evaluation.
+It is intended for R&D engineers and reviewers who need more evidence than a
+single successful demo image.
 
-The thresholding study compares a fixed global threshold, Otsu's global method, and Gaussian adaptive thresholding on deterministic synthetic images. Parameter sensitivity, denoising, and Canny edge detection experiments evaluate behavior under controlled conditions. Freely reusable photographs provide separate qualitative and stability checks, while a labeled Oxford-IIIT Pet subset supports pixel-level quantitative evaluation. A unified CLI makes the core experiments discoverable and reproducible through one interface.
+The thresholding study compares a fixed global threshold, Otsu's global
+method, and Gaussian adaptive thresholding on deterministic synthetic images.
+Parameter sensitivity, denoising, and Canny edge detection experiments evaluate
+behavior under controlled conditions. Freely reusable photographs provide
+separate qualitative and stability checks, while a labeled Oxford-IIIT Pet
+subset supports pixel-level quantitative evaluation. A unified CLI makes the
+core experiments discoverable and reproducible through one interface.
 
-Version 1.0 is the stable baseline for the documented command-line interface, Python runner API, experiment identifiers, and reproducibility manifest schema.
+This repository compares algorithms. It does not replace
+`image-dataset-inspector`, which audits input files, or `research-notes`, which
+preserves source review and a longer sequence of research investigations.
 
-## Engineering Approach
+Version 1.0 is the stable baseline for the documented command-line interface,
+Python runner API, experiment identifiers, and reproducibility manifest schema.
+
+## Representative Result
+
+The thresholding comparison shows why method choice depends on the failure
+condition: Otsu adapts to the shifted low-contrast histogram, adaptive
+thresholding leads under uneven illumination, and the same adaptive setting
+performs poorly under high noise.
+
+![Thresholding comparison](results/thresholding_comparison.png)
+
+The corresponding pixel-level IoU, precision, recall, F1, thresholds, and
+parameters are committed in
+[`results/thresholding_metrics.csv`](results/thresholding_metrics.csv).
+
+## Key Features
+
+- Five registered experiments covering thresholding, parameter sensitivity,
+  denoising, edge detection, and labeled classical segmentation
+- Deterministic synthetic masks plus a fixed, labeled six-image public subset
+- IoU, precision, recall, F1, threshold, and stability measurements written to
+  CSV
+- Public-image examples kept separate from accuracy claims when labels are not
+  available
+- A unified CLI, installable package, and documented Python runner API
+- Six checksum-verified numeric artifacts and reviewable visual comparisons
+- pytest and GitHub Actions on Python 3.10 through 3.14
+- Experiment-specific assumptions, failure analysis, and limitations
+
+## Quick Start
+
+Python 3.10 or later is required.
+On Debian or Ubuntu, install `python3-venv` if `venv` reports that `ensurepip`
+is unavailable.
+
+```bash
+git clone https://github.com/cab0a/vision-playground.git
+cd vision-playground
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
+vision-playground run thresholding --output output/quickstart
+```
+
+Review `output/quickstart/thresholding_comparison.png` and
+`output/quickstart/thresholding_metrics.csv`. To run all five default
+experiments and write the evidence index, use
+`vision-playground run all --output output/all`; the summary is
+`output/all/experiment_summary.csv`.
+
+## Technical Design
 
 `Research → Prototype → Evaluation → Interpretation`
 
@@ -87,7 +140,7 @@ The generator creates one binary ground-truth mask containing multiple geometric
 
 The random generator uses a fixed seed. No downloaded, private, or manually collected images are required.
 
-## Evaluation
+## Evaluation Methodology
 
 Each predicted binary mask is compared with the known ground truth using:
 
@@ -306,7 +359,7 @@ Summary: results/experiment_summary.csv
 
 The values answer different research questions and are not directly comparable. The [experiment results index](results/README.md) defines the summary schema and links each value to detailed evidence.
 
-## Reproducibility Verification
+## Reproducibility
 
 After running the core suite, verify the six deterministic numeric artifacts against the committed SHA-256 manifest:
 
@@ -352,35 +405,7 @@ The input audit records unreadable files and descriptive image metrics before an
 
 See the [workflow results and interpretation](results/inspected_public_sample/README.md) for the combined table, limitations, reproduction details, and data provenance.
 
-## Quick Start
-
-Python 3.10 or later is required.
-
-On Debian or Ubuntu, install the distribution-provided `python3-venv` package if `venv` reports that `ensurepip` is unavailable.
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install ".[dev]"
-vision-playground --version
-vision-playground list
-vision-playground run all
-vision-playground verify
-python -m pytest
-```
-
-Expected experiment summary:
-
-```text
-Completed experiments: 5
-Evaluations: 165
-Summary: results/experiment_summary.csv
-```
-
-The public-image commands download checksum-verified, freely reusable samples and require network access on their first run.
-
-## Output
+## Generated Artifacts
 
 The experiment writes:
 
@@ -538,9 +563,38 @@ vision-playground/
 - Conclusions are limited to the generated conditions and should be validated on task-specific public data before practical use.
 - The inspected workflow requires unique basenames for valid input images when results are joined.
 
-## Project Status
+## Development and Testing
+
+Install the development dependencies, exercise the installed command, and run
+the complete test suite:
+
+```bash
+python -m pip install ".[dev]"
+vision-playground --version
+vision-playground list
+python -m pytest
+```
+
+Tests cover deterministic fixtures, method behavior, metrics, experiment
+registration and execution, CLI errors, public-sample workflows, the labeled
+subset, package exports, and reproducibility verification. GitHub Actions runs
+the suite on Python 3.10 through 3.14 and regenerates the core experiments. On
+Python 3.12 it also reproduces the public and labeled workflows, runs the
+unified suite, and verifies the numeric manifest.
+
+The public-image commands download checksum-verified, freely reusable samples
+and require network access on their first run. On Debian or Ubuntu, install the
+distribution-provided `python3-venv` package if `venv` reports that `ensurepip`
+is unavailable.
+
+## Compatibility and Project Status
 
 Version 1.0 is the stable public baseline. Backward compatibility for the documented CLI, runner API, reproducibility API, experiment identifiers, dataclasses, and manifest schema follows the policy in the [public API guide](docs/public-api.md).
+
+Python 3.10 through 3.14 are tested in CI. The compatibility policy covers the
+documented interfaces and schema; it does not promise byte-identical image
+encoding across OpenCV builds or generalization of the committed experimental
+results.
 
 Future work may expand labeled evaluation, add controlled studies for other computer vision tasks, or measure performance at larger input scales. Such work will remain separate, reproducible studies with explicit evidence boundaries.
 
@@ -558,3 +612,15 @@ Future work may expand labeled evaluation, add controlled studies for other comp
 The project code is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 The committed Oxford-IIIT Pet subset and its derived visual artifacts retain the Creative Commons Attribution-ShareAlike 4.0 terms documented in the [dataset attribution](data/oxford_pet_sample/README.md).
+
+---
+
+## 日本語概要
+
+このリポジトリは、thresholding、denoising、edge detection、classical
+segmentationを、synthetic ground truthと公開画像で比較する再現可能なCV実験集です。
+手法ごとの挙動や失敗条件を定量・視覚の両面で確認したいR&Dエンジニアに役立ちます。
+
+統一CLI、165件のmethod-condition evaluation、CSV metrics、比較図、SHA-256
+manifest、テスト、Python 3.10〜3.14のCIを含みます。結果の解釈と制約は英語本文を
+参照してください。
