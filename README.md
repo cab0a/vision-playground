@@ -1,5 +1,17 @@
 # Vision Playground
 
+## 日本語概要
+
+このリポジトリは、thresholding、denoising、edge detection、classical
+segmentationを、synthetic ground truthと公開画像で比較する再現可能なCV実験集です。
+手法ごとの挙動や失敗条件を定量・視覚の両面で確認したいR&Dエンジニアに役立ちます。
+
+統一CLI、165件のmethod-condition evaluation、CSV metrics、比較図、SHA-256
+manifest、テスト、Python 3.10〜3.14のCIを含みます。結果の解釈と制約は英語本文を
+参照してください。
+
+---
+
 [![CI](https://github.com/cab0a/vision-playground/actions/workflows/ci.yml/badge.svg)](https://github.com/cab0a/vision-playground/actions/workflows/ci.yml)
 
 Compare classical computer-vision methods under controlled conditions, then
@@ -612,15 +624,3 @@ Future work may expand labeled evaluation, add controlled studies for other comp
 The project code is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 The committed Oxford-IIIT Pet subset and its derived visual artifacts retain the Creative Commons Attribution-ShareAlike 4.0 terms documented in the [dataset attribution](data/oxford_pet_sample/README.md).
-
----
-
-## 日本語概要
-
-このリポジトリは、thresholding、denoising、edge detection、classical
-segmentationを、synthetic ground truthと公開画像で比較する再現可能なCV実験集です。
-手法ごとの挙動や失敗条件を定量・視覚の両面で確認したいR&Dエンジニアに役立ちます。
-
-統一CLI、165件のmethod-condition evaluation、CSV metrics、比較図、SHA-256
-manifest、テスト、Python 3.10〜3.14のCIを含みます。結果の解釈と制約は英語本文を
-参照してください。
