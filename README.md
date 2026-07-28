@@ -2,13 +2,9 @@
 
 ## 日本語概要
 
-このリポジトリは、thresholding、denoising、edge detection、classical
-segmentationを、synthetic ground truthと公開画像で比較する再現可能なCV実験集です。
-手法ごとの挙動や失敗条件を定量・視覚の両面で確認したいR&Dエンジニアに役立ちます。
+このリポジトリは、thresholding、denoising、edge detection、classical segmentationを、synthetic ground truthと公開画像で比較する再現可能なCV実験集です。手法ごとの挙動や失敗条件を定量・視覚の両面で確認したいR&Dエンジニアに役立ちます。
 
-統一CLI、165件のmethod-condition evaluation、CSV metrics、比較図、SHA-256
-manifest、テスト、Python 3.10〜3.14のCIを含みます。結果の解釈と制約は英語本文を
-参照してください。
+統一CLI、165件のmethod-condition evaluation、CSV metrics、比較図、SHA-256 manifest、テスト、Python 3.10〜3.14のCIを含みます。結果の解釈と制約は英語本文を参照してください。
 
 ---
 
