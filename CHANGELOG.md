@@ -8,7 +8,10 @@
 
 ---
 
-All notable project changes are documented in this file.
+## English Summary
+
+All notable project changes are documented here, including experiments,
+interfaces, evaluation artifacts, and reproducibility updates.
 
 ## [1.0.0]
 

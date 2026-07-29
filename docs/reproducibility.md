@@ -8,6 +8,12 @@
 
 ---
 
+## English Summary
+
+This guide defines how to recreate and verify the numeric outputs of the five
+registered core experiments while separating strict checksum evidence from
+image-encoding details that may vary across OpenCV builds.
+
 ## Scope
 
 The reproducibility target is the numeric output of the five registered core experiments. The committed comparison images support visual review, but binary image encoding can vary across OpenCV builds and is not part of the strict checksum contract.

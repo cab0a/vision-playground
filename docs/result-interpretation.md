@@ -8,6 +8,12 @@
 
 ---
 
+## English Summary
+
+This guide distinguishes segmentation, edge, stability, and foreground-area
+metrics so that values are compared only when they use compatible targets,
+tolerances, and aggregation rules.
+
 ## Pixel-Level Segmentation Metrics
 
 For binary foreground masks:

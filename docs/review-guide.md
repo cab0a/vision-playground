@@ -8,6 +8,8 @@
 
 ---
 
+## English Summary
+
 This guide maps the repository's research questions, implementation,
 quantitative evaluation, failure analysis, and reproducibility evidence into a
 short review sequence.

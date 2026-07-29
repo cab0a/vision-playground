@@ -8,6 +8,12 @@
 
 ---
 
+## English Summary
+
+This document connects each computer-vision question to a controlled
+hypothesis, fixed inputs, quantitative metrics, selection rules, and explicit
+limitations across synthetic and public-image evidence.
+
 ## Workflow
 
 Each core study follows the same sequence:

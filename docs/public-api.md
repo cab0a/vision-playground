@@ -8,6 +8,12 @@
 
 ---
 
+## English Summary
+
+This reference defines the supported CLI, experiment runner, reproducibility
+helpers, package version, error behavior, and compatibility boundary. Other
+importable experiment internals remain outside the stable public surface.
+
 ## Supported Surface
 
 The supported interface consists of:

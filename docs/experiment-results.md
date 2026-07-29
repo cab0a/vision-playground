@@ -8,6 +8,8 @@
 
 ---
 
+## English Summary
+
 This document preserves the detailed reference results and experiment-specific interpretation. Use the [result interpretation guide](result-interpretation.md) for metric definitions and valid comparisons, and the [limitations](limitations.md) before extending any conclusion beyond the tested condition.
 
 ## Cross-Experiment Summary
