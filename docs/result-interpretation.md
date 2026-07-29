@@ -40,6 +40,8 @@ The rows must not be ranked because:
 
 Use the summary to locate evidence. Use the detailed CSV, comparison image, interpretation, and limitations to evaluate a conclusion.
 
+The [experiment results](experiment-results.md) preserve the detailed tables and figures. The [limitations](limitations.md) collect the shared and experiment-specific claim boundaries.
+
 ## Examples of Supported Conclusions
 
 Supported:

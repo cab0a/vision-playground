@@ -6,7 +6,7 @@ This guide provides a short path through the repository for engineers, reviewers
 
 1. Read the [experiment design](experiment-design.md) to see how questions, controlled variables, metrics, and limitations are connected.
 2. Open the [labeled public dataset report](../results/labeled_public_dataset/README.md) for a compact example of method selection, implementation, quantitative evaluation, and restrained interpretation.
-3. Review [edge detection under controlled noise](../README.md#edge-detection-under-controlled-noise) for a synthetic experiment that isolates failure conditions.
+3. Review [edge detection under controlled noise](experiment-results.md#edge-detection-under-controlled-noise) for a synthetic experiment that isolates failure conditions.
 4. Inspect the [cross-experiment result index](../results/README.md) to trace summary values to detailed CSV and visual artifacts.
 5. Check the [reproducibility guide](reproducibility.md) and CI workflow to see how installation, tests, regeneration, and checksum verification are automated.
 
@@ -19,7 +19,7 @@ This guide provides a short path through the repository for engineers, reviewers
 | Method selection | Global, local, preprocessing, and color-and-location baselines compared under stated assumptions |
 | Controlled evaluation | Deterministic synthetic ground truth, fixed seeds, parameter records, and quantitative metrics |
 | Public-data evaluation | Checksum-verified Oxford-IIIT Pet subset with attribution and pixel-level labels |
-| Failure analysis | Per-experiment limitations and examples where automatic methods do not improve the result |
+| Failure analysis | [Per-experiment limitations](limitations.md) and examples where automatic methods do not improve the result |
 | Reproducibility | One-command core suite, 31 tests, five-version CI, and SHA-256 result verification |
 | Documentation | README narratives, result-specific reports, API boundaries, data provenance, and changelog |
 
