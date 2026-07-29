@@ -1,5 +1,13 @@
 # Changelog
 
+## 日本語概要
+
+本ファイルは、各リリースで追加・変更した画像処理実験、公開API、コマンドライン、評価成果物、再現性、および互換性を記録します。
+
+各版の変更内容は以下の英語本文を参照してください。
+
+---
+
 All notable project changes are documented in this file.
 
 ## [1.0.0]

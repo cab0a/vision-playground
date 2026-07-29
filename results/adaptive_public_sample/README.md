@@ -1,5 +1,13 @@
 # Adaptive Public Image Sample
 
+## 日本語概要
+
+本書は、自由に再利用できる5枚の写真へ、近傍サイズと定数を一要因ずつ変えた4種類の適応的二値化を適用した結果を記録します。正解マスクがないため、前景率と比較画像から出力の変化を確認し、分割精度としては扱いません。
+
+再生成方法、結果、出典は以下の英語本文を参照してください。
+
+---
+
 This qualitative sample applies four Gaussian adaptive-threshold configurations to five CC0 or public-domain photographs distributed with scikit-image. Downloads are pinned to scikit-image `v0.26.0` and verified with SHA-256.
 
 The configurations use a one-factor-at-a-time comparison:

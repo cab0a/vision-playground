@@ -1,5 +1,13 @@
 # Public Image Sample
 
+## 日本語概要
+
+本書は、自由に再利用できる5枚の写真へ、合成実験と同じ固定しきい値と大津の二値化を適用した定性的な結果です。正解マスクがないため、選択されたしきい値、前景率、比較画像だけを記録し、IoU・F1・正解率は主張しません。
+
+再生成方法、解釈範囲、出典は以下の英語本文を参照してください。
+
+---
+
 This qualitative experiment applies the same fixed and Otsu global thresholding methods to five real images distributed with scikit-image. The download URLs are pinned to scikit-image `v0.26.0`, and every file is verified with SHA-256.
 
 The images do not provide semantic ground-truth masks. The experiment therefore reports selected thresholds and foreground fractions without presenting IoU, F1, or accuracy claims.

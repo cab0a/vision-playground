@@ -1,6 +1,16 @@
 # Review Guide
 
-This guide provides a short path through the repository for engineers, reviewers, and project stakeholders.
+## 日本語概要
+
+本書は、研究課題、実装、定量評価、失敗条件、再現性を対応付け、代表事例と根拠ファイルを短時間で確認できるよう整理しています。ローカルで実行する検証コマンドと、この案内自体が評価の代替ではないことも記載しています。
+
+根拠の対応表と確認手順は以下の英語本文を参照してください。
+
+---
+
+This guide maps the repository's research questions, implementation,
+quantitative evaluation, failure analysis, and reproducibility evidence into a
+short review sequence.
 
 ## Five-Minute Review
 

@@ -1,5 +1,13 @@
 # Result Interpretation
 
+## 日本語概要
+
+本書は、画像分割のIoU・適合率・再現率・F1、位置許容を含む輪郭指標、正解ラベルのない写真での安定性、前景率の意味を区別します。各値が測定していない内容も示し、異なる実験の数値を直接比較しないための解釈境界を定義しています。
+
+指標の定義と主張可能な例は以下の英語本文を参照してください。
+
+---
+
 ## Pixel-Level Segmentation Metrics
 
 For binary foreground masks:

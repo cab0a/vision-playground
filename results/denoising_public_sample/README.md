@@ -1,5 +1,13 @@
 # Denoising Public Image Sample
 
+## 日本語概要
+
+本書は、2枚の公開写真へ決定論的なガウス雑音またはごま塩雑音を加え、未処理・ガウシアンフィルター・メディアンフィルター後の大津の二値化を比較した結果です。元画像から得た二値画像とのIoUは安定性を示す値であり、人手による正解との一致ではありません。
+
+条件、結果、制約、出典は以下の英語本文を参照してください。
+
+---
+
 This sample checks how simple denoising changes Otsu-threshold stability on two freely reusable photographs. The original images are treated as clean inputs, then corrupted with deterministic Gaussian or salt-and-pepper noise.
 
 The experiment compares:

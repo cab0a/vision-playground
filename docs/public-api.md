@@ -1,5 +1,13 @@
 # Public API
 
+## 日本語概要
+
+本書は、`vision-playground`コマンド、実験登録と既定実行、SHA-256の作成・検証、版番号に関する公開範囲を定義します。公開Python APIと、テストや実験のために読み込めても互換性を保証しない内部実装を区別しています。
+
+コマンド例、例外、互換性の詳細は以下の英語本文を参照してください。
+
+---
+
 ## Supported Surface
 
 The supported interface consists of:

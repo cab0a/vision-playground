@@ -1,5 +1,13 @@
 # Labeled Public Dataset Evaluation
 
+## 日本語概要
+
+本書は、Oxford-IIIT Pet Datasetから選んだ6組の画像と正解マスクを使い、大津の二値化2方式とGrabCutを画素単位で比較した結果です。予測時には正解マスクを使わず、評価時にIoU・適合率・再現率・F1を算出します。小さな標本であり、全データを代表する基準値ではありません。
+
+手法、結果、再生成方法、制約は以下の英語本文を参照してください。
+
+---
+
 ## Question
 
 How do simple, label-free segmentation baselines perform when evaluated against pixel-level annotations from a public dataset?

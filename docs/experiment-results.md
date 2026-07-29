@@ -1,5 +1,13 @@
 # Experiment Results
 
+## 日本語概要
+
+本書は、5種類の中核実験で実施した165件の手法・条件評価をまとめています。二値化、近傍条件の感度、ノイズ除去、輪郭検出、公開正解マスクによる画像分割について、数値表と比較画像を実験別に記録し、異なる指標を順位付けには使用しません。
+
+結果、解釈、根拠ファイルの詳細は以下の英語本文を参照してください。
+
+---
+
 This document preserves the detailed reference results and experiment-specific interpretation. Use the [result interpretation guide](result-interpretation.md) for metric definitions and valid comparisons, and the [limitations](limitations.md) before extending any conclusion beyond the tested condition.
 
 ## Cross-Experiment Summary

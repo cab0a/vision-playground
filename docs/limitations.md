@@ -1,5 +1,13 @@
 # Limitations
 
+## 日本語概要
+
+本書は、合成条件、有限のパラメーター探索、アルゴリズム生成の参照画像、小規模な公開標本から得た結果の境界を記録します。画素単位の一致やノイズ下の安定性が、物体認識精度や実環境での性能を直接示さないことを明記しています。
+
+実験別の制約は以下の英語本文を参照してください。
+
+---
+
 These boundaries apply to the committed experiments and results. They are part of the evidence, not exceptions to it.
 
 ## Shared Boundaries

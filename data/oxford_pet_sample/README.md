@@ -1,5 +1,13 @@
 # Oxford-IIIT Pet Evaluation Sample
 
+## 日本語概要
+
+このディレクトリには、Oxford-IIIT Pet Datasetから選んだ6組の画像と正解マスクがあります。継続的インテグレーションでも再現・目視確認できる小さな標本として、取得元、SHA-256、ラベル値、ライセンスを記録しています。全37品種を代表する標本ではありません。
+
+由来とラベルの扱いは以下の英語本文を参照してください。
+
+---
+
 This directory contains six image and trimap pairs selected from the Oxford-IIIT Pet Dataset:
 
 - three cat images: British Shorthair, Egyptian Mau, and Ragdoll

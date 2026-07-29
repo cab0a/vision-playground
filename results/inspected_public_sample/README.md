@@ -1,5 +1,13 @@
 # Inspected Public Sample Workflow
 
+## 日本語概要
+
+本書は、Image Dataset Inspectorによる入力検査と、Vision Playgroundによる固定しきい値・大津の二値化を接続した処理例です。画像の読み込み可否と統計量を先にCSVへ記録し、有効な画像だけを評価して、検査結果と画像処理結果を対応付けます。
+
+再生成方法、成果物、解釈範囲は以下の英語本文を参照してください。
+
+---
+
 ## Objective
 
 This workflow connects two independently usable repositories into one traceable sequence:

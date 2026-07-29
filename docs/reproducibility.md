@@ -1,5 +1,13 @@
 # Reproducibility
 
+## 日本語概要
+
+本書は、5種類の中核実験が生成する数値成果物を再現し、SHA-256一覧と照合する手順を定義します。乱数種、合成入力、公開データの由来を固定しつつ、画像の符号化差は厳密なチェックサム契約から除外しています。
+
+環境構築、再生成、検証範囲は以下の英語本文を参照してください。
+
+---
+
 ## Scope
 
 The reproducibility target is the numeric output of the five registered core experiments. The committed comparison images support visual review, but binary image encoding can vary across OpenCV builds and is not part of the strict checksum contract.

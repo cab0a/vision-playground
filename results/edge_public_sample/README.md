@@ -1,5 +1,13 @@
 # Edge Detection Public Image Sample
 
+## 日本語概要
+
+本書は、2枚の公開写真へ決定論的なガウス雑音またはごま塩雑音を加え、3種類の前処理後にCanny輪郭を比較した結果です。元画像のCanny出力を参照し、2画素の位置許容を含む適合率・再現率・F1で安定性を測定しています。
+
+再生成方法、指標、結果、制約は以下の英語本文を参照してください。
+
+---
+
 This sample checks Canny edge stability on two freely reusable photographs after deterministic Gaussian or salt-and-pepper noise is added.
 
 The experiment uses:
