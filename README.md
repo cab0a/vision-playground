@@ -16,8 +16,6 @@
 
 ---
 
-[![CI](https://github.com/cab0a/vision-playground/actions/workflows/ci.yml/badge.svg)](https://github.com/cab0a/vision-playground/actions/workflows/ci.yml)
-
 Compare classical computer-vision methods under controlled conditions, then inspect their metrics, sensitivity, visual output, and failure cases.
 
 ## Overview
