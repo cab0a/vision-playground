@@ -22,7 +22,7 @@ Compare classical computer-vision methods under controlled conditions, then insp
 
 ## Overview
 
-Vision Playground is a collection of small, reproducible computer-vision experiments for R&D engineers who need to compare methods rather than present one successful demo image.
+Vision Playground is a collection of small, reproducible computer-vision experiments. It compares methods rather than presenting one successful demo image.
 
 The repository evaluates thresholding, adaptive-parameter sensitivity, denoising, Canny edge detection, and classical segmentation. Deterministic synthetic images isolate failure conditions. Freely reusable photographs provide qualitative and stability checks, while a fixed Oxford-IIIT Pet subset provides public pixel labels.
 
