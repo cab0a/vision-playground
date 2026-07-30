@@ -10,7 +10,7 @@
 - 手法と条件の組み合わせによる合計165件の評価
 - 正解データ付きの合成画像と、固定した6枚のラベル付き公開画像
 - CSV形式の評価結果、比較図、SHA-256ハッシュで検証する6件の数値成果物
-- 31件のテストをPython 3.10〜3.14で自動実行
+- 31件のテストをPython 3.10〜3.14で自動実行し、Python 3.12では再生成した数値結果と比較画像の差分を検査
 
 結果の解釈、再現手順、制約の詳細は、以下の英語本文を参照してください。
 
@@ -220,7 +220,7 @@ python -m pytest
 
 Tests cover deterministic fixtures, method behavior, metrics, experiment registration and execution, CLI errors, public-sample workflows, the labeled subset, package exports, and reproducibility verification.
 
-GitHub Actions runs the test suite and regenerates the core experiments on Python 3.10 through 3.14. On Python 3.12 it also executes the README Quick Start, requires its comparison image and metrics CSV, reproduces the public and labeled workflows, runs the unified suite, and verifies the numeric manifest.
+GitHub Actions runs the test suite and regenerates the core experiments on Python 3.10 through 3.14. On Python 3.12 it also executes the README Quick Start, requires its comparison image and metrics CSV, reproduces the public and labeled workflows, runs the unified suite, verifies the numeric manifest, and requires an empty Git diff across the committed result set.
 
 Public-image commands require network access on their first run because they download checksum-verified, freely reusable samples.
 

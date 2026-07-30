@@ -85,3 +85,9 @@ jobs:
       - name: Verify numeric reference artifacts
         if: matrix.python-version == '3.12'
         run: vision-playground verify
+
+      - name: Verify regenerated reference artifacts
+        if: matrix.python-version == '3.12'
+        run: |
+          git diff --exit-code -- results/
+          test -z "$(git status --porcelain --untracked-files=all -- results/)"
