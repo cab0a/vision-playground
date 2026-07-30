@@ -220,7 +220,7 @@ python -m pytest
 
 Tests cover deterministic fixtures, method behavior, metrics, experiment registration and execution, CLI errors, public-sample workflows, the labeled subset, package exports, and reproducibility verification.
 
-GitHub Actions runs the test suite and regenerates the core experiments on Python 3.10 through 3.14. On Python 3.12 it also reproduces the public and labeled workflows, runs the unified suite, and verifies the numeric manifest.
+GitHub Actions runs the test suite and regenerates the core experiments on Python 3.10 through 3.14. On Python 3.12 it also executes the README Quick Start, requires its comparison image and metrics CSV, reproduces the public and labeled workflows, runs the unified suite, and verifies the numeric manifest.
 
 Public-image commands require network access on their first run because they download checksum-verified, freely reusable samples.
 

@@ -36,6 +36,13 @@ jobs:
           vision-playground --version
           vision-playground list
 
+      - name: Run README Quick Start
+        if: matrix.python-version == '3.12'
+        run: |
+          vision-playground run thresholding --output output/quickstart
+          test -s output/quickstart/thresholding_comparison.png
+          test -s output/quickstart/thresholding_metrics.csv
+
       - name: Run tests
         run: python -m pytest
 
