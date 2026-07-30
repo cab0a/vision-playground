@@ -260,7 +260,7 @@ vision-playground/
 - [OpenCV: Canny Edge Detection](https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html)
 - [Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets/)
 - Nobuyuki Otsu, [A Threshold Selection Method from Gray-Level Histograms](https://doi.org/10.1109/TSMC.1979.4310076), 1979
-- Omkar M. Parkhi, Andrea Vedaldi, Andrew Zisserman, and C. V. Jawahar, [Cats and Dogs](https://www.robots.ox.ac.uk/~vgg/publications/2012/Parkhi12a/), 2012
+- Omkar M. Parkhi, Andrea Vedaldi, Andrew Zisserman, and C. V. Jawahar, [Cats and Dogs](https://doi.org/10.1109/CVPR.2012.6248092), 2012
 
 ## License
 
